@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<div class="contact-clean" style="margin-top:40px;">
+    {% include 'includes/_messages.html' %}
+    <form action="{{url_for('meeting_request')}}" method="POST">
+        <h2 class="text-center">Generate Meeting request</h2>
+        <div class="form-group">
+            <input class="form-control" type="text" name="subject" placeholder="Meeting Subject">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="time" placeholder="Time">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="date" name="date" placeholder="YYYY-DD-MM">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="venue" placeholder="Venue">
+        </div>
+
+
+        <div class="form-group">
+            <label for="sel1">batch</label>
+            <select name="batch" class="form-control" id="sel1">
+                <option>select</option>
+                {% for bat in mentor.batch %}
+                <option>{{bat.year}} {{bat.branch}} {{bat.division}} batch {{bat.batch_name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
+
+
+
+
+
+
+        <div class="form-group">
+            <input type="submit" value="Generate">
+        </div>
+    </form>
+</div>
+{% endblock %}

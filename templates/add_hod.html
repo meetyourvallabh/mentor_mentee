@@ -1,0 +1,72 @@
+
+{% extends 'layout.html' %}
+
+{% block body %}
+<div style="margin-top:50px;">
+<div class="contact-clean">
+        {% include 'includes/_messages.html' %}
+        <div class="row">
+            <div class="col-md-6">
+                <form action="{{url_for('add_hod')}}" method="post">
+                    <h2 class="text-center">Add HOD</h2>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="fname" placeholder="First Name">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="mname" placeholder="Middle Name">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="lname" placeholder="Last Name">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="email" name="email" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="phone" placeholder="Phone number">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="branch" placeholder="Branch">
+                    </div>
+                    
+
+                    
+
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">Add </button>
+                    </div>
+                </form>
+            </div>
+
+
+
+            <div class="col-md-6">
+                
+               
+                
+                    <table class="table table-hover table-dark">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Branch</th>
+                            <th scope="col">Option</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        {% for hod in hods %}
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>{{hod.fname}} {{hod.mname}} {{hod.lname}}</td>
+                            <td>{{hod.branch}}</td>
+                            <td><a class="btn btn-sm btn-danger" href="#">Delete</a></td>
+                          </tr>
+                        {% endfor %}  
+                        </tbody>
+                    </table>
+            </div>
+
+        </div>
+    </div>
+  </div>
+
+{% endblock %}

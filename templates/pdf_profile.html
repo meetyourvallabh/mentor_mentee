@@ -1,0 +1,766 @@
+<style>
+   /* Extract from normalize.css by Nicolas Gallagher and Jonathan Neal git.io/normalize */
+
+   html {
+      -ms-text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+   }
+
+   body {
+      margin: 0
+   }
+
+   article,
+   aside,
+   details,
+   figcaption,
+   figure,
+   footer,
+   header,
+   main,
+   menu,
+   nav,
+   section,
+   summary {
+      display: block
+   }
+
+   audio,
+   canvas,
+   progress,
+   video {
+      display: inline-block
+   }
+
+   progress {
+      vertical-align: baseline
+   }
+
+   audio:not([controls]) {
+      display: none;
+      height: 0
+   }
+
+   [hidden],
+   template {
+      display: none
+   }
+
+   a {
+      background-color: transparent;
+      -webkit-text-decoration-skip: objects
+   }
+
+   a:active,
+   a:hover {
+      outline-width: 0
+   }
+
+   abbr[title] {
+      border-bottom: none;
+      text-decoration: underline;
+      text-decoration: underline dotted
+   }
+
+   dfn {
+      font-style: italic
+   }
+
+   mark {
+      background: #ff0;
+      color: #000
+   }
+
+   small {
+      font-size: 80%
+   }
+
+   sub,
+   sup {
+      font-size: 75%;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline
+   }
+
+   sub {
+      bottom: -0.25em
+   }
+
+   sup {
+      top: -0.5em
+   }
+
+   figure {
+      margin: 1em 40px
+   }
+
+   img {
+      border-style: none
+   }
+
+   svg:not(:root) {
+      overflow: hidden
+   }
+
+   pre {
+      font-family: monospace, monospace;
+      font-size: 1em;
+   }
+
+   kbd {
+      font-family: monospace, monospace;
+      font-size: 1em;
+      background: lightgray;
+      color: red;
+      padding: 3px;
+      border-radius: 3px;
+   }
+
+   code,
+   samp {
+      font-family: monospace, monospace;
+      font-size: 1em;
+   }
+
+   hr {
+      box-sizing: content-box;
+      height: 0;
+      overflow: visible;
+   }
+
+   button,
+   input,
+   select,
+   textarea {
+      font: inherit;
+      margin: 0
+   }
+
+   optgroup {
+      font-weight: bold
+   }
+
+   button,
+   input {
+      overflow: visible
+   }
+
+   button,
+   select {
+      text-transform: none
+   }
+
+   button,
+   html [type=button],
+   [type=reset],
+   [type=submit] {
+      -webkit-appearance: button
+   }
+
+   button::-moz-focus-inner,
+   [type=button]::-moz-focus-inner,
+   [type=reset]::-moz-focus-inner,
+   [type=submit]::-moz-focus-inner {
+      border-style: none;
+      padding: 0
+   }
+
+   button:-moz-focusring,
+   [type=button]:-moz-focusring,
+   [type=reset]:-moz-focusring,
+   [type=submit]:-moz-focusring {
+      outline: 1px dotted ButtonText
+   }
+
+   fieldset {
+      border: 1px solid #c0c0c0;
+      margin: 0 2px;
+      padding: .35em .625em .75em
+   }
+
+   legend {
+      color: inherit;
+      display: table;
+      max-width: 100%;
+      padding: 0;
+      white-space: normal
+   }
+
+   textarea {
+      overflow: auto
+   }
+
+   [type=checkbox],
+   [type=radio] {
+      padding: 0
+   }
+
+   [type=number]::-webkit-inner-spin-button,
+   [type=number]::-webkit-outer-spin-button {
+      height: auto
+   }
+
+   [type=search] {
+      -webkit-appearance: textfield;
+      outline-offset: -2px
+   }
+
+   [type=search]::-webkit-search-cancel-button,
+   [type=search]::-webkit-search-decoration {
+      -webkit-appearance: none
+   }
+
+   ::-webkit-input-placeholder {
+      color: inherit;
+      opacity: 0.54
+   }
+
+   ::-webkit-file-upload-button {
+      -webkit-appearance: button;
+      font: inherit
+   }
+
+   html,
+   body {
+      font-family: Verdana, sans-serif;
+      font-size: 15px;
+      line-height: 1.5
+   }
+
+   html {
+      overflow-x: hidden
+   }
+
+   h1 {
+      font-size: 36px
+   }
+
+   h2 {
+      font-size: 30px
+   }
+
+   h3 {
+      font-size: 24px
+   }
+
+   h4 {
+      font-size: 20px
+   }
+
+   h5 {
+      font-size: 18px
+   }
+
+   h6 {
+      font-size: 16px
+   }
+
+   .w3-serif {
+      font-family: serif
+   }
+
+   h1,
+   h2,
+   h3,
+   h4,
+   h5,
+   h6 {
+      font-family: 'Roboto Slab', serif;
+      font-weight: 400;
+      margin: 10px 0
+   }
+
+   .w3-wide {
+      letter-spacing: 4px
+   }
+
+   hr {
+      border: 0;
+      border-top: 1px solid #eee;
+      margin: 20px 0
+   }
+
+   /*style.css*/
+   * {
+      position: relative;
+      box-sizing: border-box;
+      font-size: 20px;
+      font-family: 'roboto', sans-serif;
+   }
+
+   .content {
+      max-width: 1110px;
+      padding: 8px;
+      margin: auto;
+   }
+
+   a {
+      text-decoration: none;
+   }
+
+   header {
+      width: 100%;
+      height: 200px;
+      box-shadow: 0 2px 10px 0 rgba(25, 25, 25, 0.5), 0 4px 13px 0 rgba(25, 25, 25, 0.2);
+      background: teal;
+      display: table;
+
+   }
+
+   header .name {
+      display: table-cell;
+      vertical-align: middle;
+      font-size: 25px;
+      color: white;
+      text-align: center;
+   }
+
+   .ava {
+      overflow: auto;
+      display: table-cell;
+      vertical-align: middle;
+      width: 50%;
+   }
+
+   .ava img {
+      position: relative;
+      float: right;
+      right: 0.5em;
+      border: 2px solid white;
+      width: 180px;
+      height: auto;
+      border-radius: 100px;
+   }
+
+   aside {
+      float: left;
+      width: 30%;
+      margin-top: 10px;
+
+   }
+
+   aside .name {
+      width: 30%;
+      display: inline-block;
+   }
+
+   aside .vl {
+      width: 68%;
+      display: inline-block;
+   }
+
+   aside .skill {
+      width: 85%;
+      height: 10px;
+      margin-bottom: 20px;
+      background: lightgray;
+      border-radius: 5px;
+   }
+
+   p {
+      display: block;
+      clear: both;
+      word-wrap: break-word;
+      margin-top: 0px;
+   }
+
+
+   aside .skill-right {
+      position: absolute;
+      width: 80%;
+      height: 10px;
+      background: teal;
+      border-radius: 5px;
+      margin: 0;
+      padding: 0;
+      left: 0;
+   }
+
+   div.r1 {
+      width: 90%;
+   }
+
+   div.r2 {
+      width: 75%;
+   }
+
+   div.r3 {
+      width: 40%;
+   }
+
+   div.r4 {
+      width: 90%;
+   }
+
+   div.r5 {
+      width: 70%;
+   }
+
+   div.r6 {
+      width: 65%;
+   }
+
+   div.r7 {
+      width: 80%;
+   }
+
+   section {
+      float: left;
+      width: 69%;
+      margin-top: 10px;
+      margin-left: 8px;
+   }
+
+   .box {
+      display: block;
+      padding: 14px;
+      margin: 8px 0;
+      background: white;
+      width: 100%;
+      box-shadow: 0 0 5px rgba(25, 25, 25, 0.3), 0 0 8px rgba(25, 25, 25, 0.1);
+   }
+
+   .title {
+      position: absolute;
+      width: 100%;
+      top: 0px;
+      left: 0;
+      background: #51b1ff;
+      padding: 5px;
+      font-size: 20px;
+      color: rgb(252, 252, 252);
+   }
+
+   .title>i {
+      font-size: 26px !important;
+   }
+
+   i {
+      font-size: 18px !important;
+      color: rgb(50, 104, 255);
+      margin-right: 10px;
+
+   }
+
+   ul {
+      padding-left: 16px;
+   }
+
+   .padd-top {
+      padding-top: 35px;
+   }
+
+   .padd-left {
+      padding-left: 25px;
+      word-wrap: break-word;
+   }
+
+   @media only screen and (max-width:1000px) {
+
+      aside,
+      section {
+         width: 100%;
+         margin-left: 0;
+      }
+
+   }
+
+   @media only screen and (max-width:500px) {
+      .ava {
+         width: 100%;
+         position: relative;
+         top: 50px;
+         clear: both;
+         overflow: auto;
+         display: block;
+      }
+
+      .ava img {
+         float: none;
+         right: 0;
+         border: 6px solid white;
+         margin: auto;
+         width: 180px;
+         height: auto;
+         border-radius: 100px;
+         position: relative;
+         left: 50%;
+         transform: translateX(-50%);
+      }
+
+      header .name {
+         text-shadow: 0 0 3px white;
+         color: teal;
+         width: 100%;
+         position: absolute;
+         bottom: -70px;
+         text-align: center;
+         font-weight: bolder;
+
+      }
+
+      header {
+         width: 100%;
+         height: 200px;
+         box-shadow: 0 2px 10px 0 rgba(25, 25, 25, 0.5), 0 4px 13px 0 rgba(25, 25, 25, 0.2);
+         background-size: 100% auto;
+
+      }
+
+      .content {
+         margin-top: 60px;
+      }
+
+   }
+
+   footer {
+      width: 100%;
+      height: 60px;
+      clear: both;
+      background: teal;
+      box-shadow: 0 -2px 10px gray;
+      text-align: center;
+   }
+</style>
+<div class="container-fluid" style="margin-top:100px;">
+
+
+
+
+</div>
+
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+<title>About me</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div class="content">
+   <aside class="info ">
+      <div class="box text-center">
+         <img src="{{url_for('static',filename=user.propic, _external=True)}}" height="250" width="250" id="profilepic"
+            class="avatar img-circle" alt="avatar">
+         <h1 class="text-center">{{user.fname}} {{user.mname}} {{user.lname}}</h1>
+      </div>
+      <div class="box">
+         <p class="title">
+            <i class="fa fa-info-circle"></i>Contact
+         </p>
+
+
+         <p class="padd-top">
+            <i class="fa fa-birthday-cake"></i>
+            {% if user.address is defined %}
+            {{user.dob}}
+            {% else %}
+            DOB is not updated yet..
+            {% endif %}
+         </p>
+
+         <p>
+            <i class="fa fa-phone"></i>
+            {{user.phone}}
+         </p>
+
+         <p>
+            <i class="fa fa-envelope"></i>
+            {{user.email}}
+         </p>
+
+         <p>
+            <i class="fa fa-home"></i>
+            {% if user.address is defined %}
+            {{user.address.local.address}}, {{user.address.local.city}}, {{user.address.local.state}}
+            {% else %}
+            No address updated yet..
+            {% endif %}
+         </p>
+
+      </div>
+
+      <div class="box">
+
+         <p class="title">
+            <i class="fa fa-asterisk"></i>
+            Skill
+         </p>
+
+
+         {% if user.personal is defined %}
+         <p class="padd-top">
+            <b>Hobbies :</b>
+            {{user.personal.hobbies}}
+         </p>
+         <p>
+            <b>Strength :</b>
+            {{user.personal.strength}}
+         </p>
+         <p>
+            <b>Weakness :</b>
+            {{user.personal.weakness}}
+         </p>
+         <p>
+            <b>Major Illness :</b> {{user.personal.majorillness}}
+         </p>
+         <p>
+            <b>Major allergic :</b>
+            {{user.personal.majoralergic}}
+         </p>
+         {% else %}
+         Personal Information is not filled yet..
+         {% endif %}
+
+      </div>
+
+   </aside>
+
+
+   <section class="main">
+      <div class="box">
+         <p class="title">
+            <i class="fa fa-graduation-cap"></i>
+            Education
+         </p>
+         <p class="padd-top">
+            {% if user.academic is defined %}
+            <b>
+               <h3>10th :</h3>
+            </b>
+            <ul>
+               <li>Board : {{user.academic.result.class_10.board}}</li>
+               <li>Year of completition : {{user.academic.result.class_10.year}}</li>
+               <li>Marks : {{user.academic.result.class_10.marks}}</li>
+               <li>Percentage : {{user.academic.result.class_10.percentage}}</li>
+
+            </ul>
+            {% if user.academic.result.class_12.board !="" %}
+            <b>
+               <h3> <b> 12th :</b></h3>
+            </b>
+            <ul>
+               <li>Board : {{user.academic.result.class_12.board}}</li>
+               <li>Year of completition : {{user.academic.result.class_12.year}}</li>
+               <li>Marks : {{user.academic.result.class_12.marks}}</li>
+               <li>Entrance Marks : {{user.academic.result.class_12.entrance}}</li>
+               <li>Percentage : {{user.academic.result.class_12.percentage}}</li>
+
+            </ul>
+            {% endif %}
+            {% if user.academic.result.diploma.board !="" %}
+            <b>
+               <h3> <b> Diploma : </b></h3>
+            </b>
+            <ul>
+               <li>Board : {{user.academic.result.diploma.board}}</li>
+               <li>Year of completition : {{user.academic.result.diploma.year}}</li>
+               <li>Marks : {{user.academic.result.diploma.marks}}</li>
+               <li>Percentage : {{user.academic.result.diploma.percentage}}</li>
+
+            </ul>
+            {% endif %}
+
+            {% else %}
+            Academic Information is not filled yet..
+            {% endif %}
+         </p>
+      </div>
+
+      <div class="box">
+         <p class="title">
+            <i class="fa fa-flag"></i>
+
+            Extra Curicular Activities
+         </p>
+         <br>
+         <p class="padd-top">
+            {% if user.academic is defined %}
+            {{user.academic.extra_curicular}}
+            {% else %}
+            Academic Information is not filled yet..
+            {% endif %}
+         </p>
+      </div>
+
+      <div class="box">
+         <p class="title">
+            <i class="fa fa-users"></i>
+            Family Background
+         </p>
+
+         <p class="padd-top">
+            {% if user.family is defined %}
+            <b>
+               <h3> <b> Father : </b></h3>
+            </b>
+            <p><i class="fa fa-user" aria-hidden="true"></i> Name : {{user.family.father.fname}}
+               {{user.family.father.mname}} {{user.family.father.lname}}</p>
+            <p><i class="fa fa-suitcase" aria-hidden="true"></i> Occupation : {{user.family.father.occupation}}</p>
+            <p><i class="fa fa-phone" aria-hidden="true"></i> Phone : {{user.family.father.phone}}</p>
+
+            <b>
+               <h3> <b> Mother : </b></h3>
+            </b>
+
+            <p><i class="fa fa-user" aria-hidden="true"></i> Name : {{user.family.mother.fname}}
+               {{user.family.mother.mname}} {{user.family.mother.lname}}</p>
+            <p><i class="fa fa-suitcase" aria-hidden="true"></i> Occupation : {{user.family.mother.occupation}}</p>
+            <p><i class="fa fa-phone" aria-hidden="true"></i> Phone : {{user.family.mother.phone}}</p>
+
+            {% else %}
+            Family info is not filled yet..
+            {% endif %}
+         </p>
+
+      </div>
+
+      <div class="box">
+         <p class="title">
+            <i class="fa fa-flag"></i>
+            Guardian / Hostel Details
+         </p>
+
+         <p class="padd-top">
+            {% if user.guardian is defined %}
+
+            <p><i class="fa fa-user" aria-hidden="true"></i>Name : {{user.guardian.name}}</p>
+            <p><i class="fa fa-suitcase" aria-hidden="true"></i> Address : {{user.guardian.address}}</p>
+            <p><i class="fa fa-phone" aria-hidden="true"></i> Phone : {{user.guardian.phone}}</p>
+
+            {% else %}
+            Guardian / Hostel details is not filled yet..
+            {% endif %}
+         </p>
+      </div>
+      <div class="box">
+         <p class="title">
+            <i class="fa fa-flag"></i>
+            activity
+         </p>
+         <br>
+         <p class="padd-top">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur rem, perspiciatis
+            aliquam amet asperiores earum vero hic ab, minus veritatis.
+         </p>
+      </div>
+
+
+
+      <div>
+         <div class="box">
+            <p class="title">
+               <i class="fa fa-crosshairs" aria-hidden="true"></i>
+               Career goals
+            </p>
+            <br>
+            <p class="padd-top">
+               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aspernatur rem, perspiciatis aliquam amet
+               asperiores earum vero hic ab, minus veritatis. <br>
+            </p>
+         </div>
+      </div>
+
+   </section>
+
+</div>
+<footer style="background:#51b1ff;color:white"> Designed by MYO - MakeYourOwn </footer>

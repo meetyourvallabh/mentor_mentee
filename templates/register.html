@@ -1,0 +1,102 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<link rel="stylesheet" href="{{url_for('static',filename='assets/fonts/linearicons/style.css')}}">
+		
+<!-- STYLE CSS -->
+<link rel="stylesheet" href="{{url_for('static',filename='assets/css/style.css')}}">
+<div class="wrapper">
+        {% include 'includes/_messages.html' %}
+        <div class="inner" style="margin-top:100px;margin-bottom: 50px;">
+            <img src="{{url_for('static',filename='assets/images/image-1.png')}}" alt="" class="image-1">
+            <form method="POST" action="{{url_for('register')}}">
+                <h3>New Mentee?</h3>
+                <div class="form-holder">
+                    <span class="lnr lnr-user"></span>
+                    <input type="text" class="form-control" required name="fname" placeholder="First Name">
+                </div>
+                <div class="form-holder">
+                    <span class="lnr lnr-user"></span>
+                    <input type="text" class="form-control" required name="mname" placeholder="Middle Name">
+                </div>
+                <div class="form-holder">
+                    <span class="lnr lnr-user"></span>
+                    <input type="text" class="form-control" required name="lname" placeholder="Last Name">
+                </div>
+                <div class="form-holder">
+                    <span class="lnr lnr-phone-handset"></span>
+                    <input type="text" class="form-control" required name="phone" placeholder="Phone Number">
+                </div>
+                <div class="form-holder">
+                    <span class="lnr lnr-envelope"></span>
+                    <input type="text" class="form-control" required name="email" placeholder="Mail">
+                </div>
+                <div class="form-holder">
+                    <span class="lnr lnr-lock"></span>
+                    <input type="password" class="form-control" required name="password" placeholder="Password">
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                        <label for="sel2">Year</label>
+                        <select name="year" class="form-control" id="sel2">
+                            <option>select</option>
+                            <option>FE</option>
+                            <option>SE</option>
+                            <option>TE</option>
+                            <option>BE</option>
+                        </select>
+                        </div>
+
+                        <div class="form-group">
+                        <label for="sel3">Division</label>
+                        <select name="division" class="form-control" id="sel3">
+                            <option>select</option>
+                            <option>A</option>
+                            <option>B</option>
+                        </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                        <label for="sel1">branch</label>
+                        <select name="branch" class="form-control" id="sel1">
+                            <option>select</option>
+                            {% for branch in branches %}
+                            <option>{{branch.branch}}</option>
+                            {% endfor %}
+                        </select>
+                        </div>
+                        
+                        <div class="form-group">
+                        <label for="sel4">Batch</label>
+                        <select name="batch" class="form-control" id="sel4">
+                            <option>select</option>
+                            <option>A</option>
+                            <option>B</option>
+                            <option>C</option>
+                            <option>D</option>
+                            <option>E</option>
+                        </select>
+                        </div>
+                    </div>
+
+                </div>
+                        
+
+                        
+                
+                <button>
+                    <span>Register</span>
+                </button>
+            </form>
+            <img src="{{url_for('static',filename='assets/images/image-2.png')}}" alt="" class="image-2">
+        </div>
+        
+    </div>
+
+    <script src="{{url_for('static',filename='assets/js/jquery-3.3.1.min.js')}}"></script>
+    <script src="{{url_for('static',filename='assets/js/main.js')}}"></script>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+<div class="container" style="margin-top:100px;">
+    {% for meeting in meetings %}
+    <a style="color:black" href="{{url_for('meeting',id=meeting.meeting_id)}}">
+        <div class="card">
+            <div class="card-header">
+                {{meeting.subject}}
+
+            </div>
+            <div class="card-body">
+                Date : {{meeting.date}} <br>
+                Time : {{meeting.time}} <br>
+                Venue : {{meeting.venue}} <br>
+
+
+            </div>
+        </div>
+    </a>
+    <br>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

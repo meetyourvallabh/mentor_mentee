@@ -1,0 +1,93 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div style="margin-top:50px;">
+    <div class="contact-clean">
+        <div class="row">
+            <div class="col-md-5">
+
+                {% include 'includes/_messages.html' %}
+                <form action="{{url_for('add_mentee')}}" method="post">
+                    <h2 class="text-center">Add Mentee</h2>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="fname" placeholder="First Name">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="mname" placeholder="Middle Name">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="lname" placeholder="Last Name">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="email" name="email" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="phone" placeholder="Phone number">
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="sel1">batch</label>
+                        <select name="batch" class="form-control" id="sel1">
+
+
+                            {% for bat in mentor.batch %}
+                            <option>{{bat.year}} {{bat.branch}} {{bat.division}} batch {{bat.batch_name}}</option>
+                            {% endfor %}
+
+
+                        </select>
+                    </div>
+
+
+
+
+
+
+
+
+                    <div class="form-group">
+                        <button class="btn btn-primary" type="submit">Add </button>
+                    </div>
+                </form>
+            </div>
+            <!--First column end-->
+            <div class="col-md-7">
+                <table class="table table-hover table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Year</th>
+                            <th scope="col">Branch</th>
+                            <th scope="col">Batches</th>
+                            <th scope="col">Option</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mentee in mentees %}
+                        <tr>
+                            <th scope="row">{{loop.index}}</th>
+                            <td>{{mentee.fname}} {{mentee.mname}} {{mentee.lname}}</td>
+                            <td>{{mentee.year}}</td>
+                            <td>{{mentee.branch}}</td>
+                            <td>
+                                {{mentee.batch}}
+                            </td>
+                            <td><a class="btn btn-sm btn-danger" href="#">Delete</a></td>
+                            <td><a class="btn btn-primary" href="{{url_for('view_profile',email=mentee.email)}}">View
+                                    profile</a></td>
+                            <td><a class="btn btn-primary"
+                                    href="{{url_for('view_profile',email=mentee.email,option='download')}}">Download</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

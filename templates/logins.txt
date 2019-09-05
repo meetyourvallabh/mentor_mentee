@@ -1,0 +1,22 @@
+HOD LOGIN:
+
+Email id : developer@makeyourown.club
+Password : S.9551
+
+
+ADMIN LOGIN:
+
+Email id : meetyourvallabh@gmail.com
+Password : xxx
+
+
+MENTEE LOGIN:
+
+Email id : vallabhhake1@gmail.com
+Password : xxx
+
+
+MENTOR LOGIN:
+
+Email id : ceo@makeyourown.club
+Password : xxx

@@ -1,0 +1,524 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<div class="container-fluid" style="margin-top:100px;">
+  <div class="row">
+    <div class="col-sm-3 text-center">
+      <h1>{{session.fname}} {{session.lname}}</h1>
+    </div>
+    {% include 'includes/_messages.html' %}
+  </div>
+  <div class="row">
+
+    <div class="col-sm-3">
+      <!--left col-->
+
+      <div class="text-center">
+        <img src="{{url_for('static',filename=user.propic)}}" height="250" width="250" id="profilepic"
+          class="avatar img-circle" alt="avatar">
+        <h6>Upload a different photo...</h6>
+        <form class="form" action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
+          <div class="form-group">
+            <input type="file" name="propic" id="profilepicinput" class="text-center center-block file-upload">
+          </div>
+          <div class="form-group">
+            <button class="btn" onclick="submit()"><i class="fa fa-upload"> &nbsp;Upload</i></button>
+          </div>
+        </form>
+      </div>
+      </hr><br>
+
+
+
+    </div>
+    <div class="col-sm-9">
+      <ul class="nav nav-tabs">
+        <li class="nav-item"><a class="nav-link active" role="tab" data-toggle="tab" href="#tab-1">Personal
+            Information</a></li>
+        <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-2">Family Information</a></li>
+        <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-3">Academics</a></li>
+        <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-4">Results</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" role="tabpanel" id="tab-1">
+          <hr>
+          <form method="POST" action="{{url_for('updateprofile',step=1)}}">
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="fname">First name</label>
+                <input type="text" class="form-control" name="fname"
+                  value="{% if user.fname is defined %}{{user.fname}}{% endif %}" id="fname" placeholder="First Name">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="mname">Middle name</label>
+                <input type="text" class="form-control" name="mname"
+                  value="{% if user.mname is defined %}{{user.mname}}{% endif %}" id="mname" placeholder="Middle Name">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="lname">Last name</label>
+                <input type="text" class="form-control" name="lname"
+                  value="{% if user.lname is defined %}{{user.lname}}{% endif %}" id="lname" placeholder="Last Name">
+              </div>
+            </div>
+            <br>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="inputEmail4">Email</label>
+                <input type="email" class="form-control" name="email"
+                  value="{% if user.email is defined %}{{user.email}}{% endif %}" id="inputEmail4" placeholder="Email">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="dob">Date of Birth (DD/MM/YYY)</label>
+                <input type="date" class="form-control" name="dob" id="dob"
+                  value="{% if user.dob is defined %}{{user.dob}}{%else%}2010-11-10{% endif %}" placeholder="">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="phone">Phone</label>
+                <input type="digit" class="form-control" name="phone"
+                  value="{% if user.phone is defined %}{{user.phone}}{% endif %}" id="phone" placeholder="Phone no">
+              </div>
+            </div>
+            <br>
+            <div class="form-row">
+
+              <div class="form-group col-md-4">
+                <label for="prn">PRN number</label>
+                <input type="text" class="form-control" value="{% if user.prn is defined %}{{user.prn}}{% endif %}"
+                  id="prn" placeholder="PRN number">
+              </div>
+
+              <div class="form-group col-md-4">
+                <label for="admission_year">Admission Year</label>
+                <input type="text" class="form-control" name="admission_year" id="admission_year"
+                  value="{% if user.admission_year is defined %}{{user.admission_year}}{% endif %}"
+                  placeholder="Year of Admission">
+              </div>
+            </div>
+            <br>
+            <hr>
+            <br>
+            <div class="form-group col-md-6">
+              <label for="hobbies">Hobbies</label>
+              <input type="text" class="form-control" name="hobbies"
+                value="{% if user.personal is defined %}{{user.personal.hobbies}}{% endif %}" id="hobbies"
+                placeholder="Reading, writing, etc.">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="strength">Strength</label>
+              <input type="text" class="form-control" name="strength"
+                value="{% if user.personal is defined %}{{user.personal.strength}}{% endif %}" id="strength"
+                placeholder="Communication, coding, etc.">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="weakness">Weakness</label>
+              <input type="text" class="form-control" name="weakness"
+                value="{% if user.personal is defined %}{{user.personal.weakness}}{% endif %}" id="weakness"
+                placeholder="Stage fear, etc.">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="majorillness">Major illness</label>
+              <input type="text" class="form-control" name="majorillness"
+                value="{% if user.personal is defined %}{{user.personal.majorillness}}{% endif %}" id="majorillness"
+                placeholder="Diabetes, etc.">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="majoralergic">Major alergic</label>
+              <input type="text" class="form-control" name="majoralergic"
+                value="{% if user.personal is defined %}{{user.personal.majoralergic}}{% endif %}" id="majoralergic"
+                placeholder="Daibetes, etc.">
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Save</button>
+          </form>
+        </div>
+        <div class="tab-pane " role="tabpanel" id="tab-2">
+          <br>
+          <h4> Family Details : </h4>
+          <hr>
+          <form method="post" action="{{url_for('updateprofile',step=2)}}">
+            <label for="fathername">Father's full name</label>
+            <div id="fathername" class="form-row">
+
+              <div class="form-group col-md-4">
+                <input type="text" disabled class="form-control"
+                  value="{% if user.mname is defined %}{{user.mname}}{% endif %}" id="mname" placeholder="First Name">
+              </div>
+              <div class="form-group col-md-4">
+                <input type="text" class="form-control" name="father_mname" id="mname"
+                  value="{% if user.family is defined %}{{user.family.father.mname}}{% endif %}"
+                  placeholder="Middle Name">
+              </div>
+              <div class="form-group col-md-4">
+                <input type="text" disabled class="form-control"
+                  value="{% if user.lname is defined %}{{user.lname}}{% endif %}" id="lname" placeholder="Last Name">
+              </div>
+            </div>
+
+
+
+            <label for="mothername">Mother's full name</label>
+            <div id="mothername" class="form-row">
+
+              <div class="form-group col-md-4">
+                <input type="text" class="form-control" name="mother_fname"
+                  value="{% if user.family is defined %}{{user.family.mother.fname}}{% endif %}" id="fname"
+                  placeholder="First Name">
+              </div>
+              <div class="form-group col-md-4">
+                <input type="text" class="form-control" disabled id="mname"
+                  value="{% if user.mname is defined %}{{user.mname}}{% endif %}" placeholder="Middle Name">
+              </div>
+              <div class="form-group col-md-4">
+                <input type="text" class="form-control" disabled name="lname"
+                  value="{% if user.lname is defined %}{{user.lname}}{% endif %}" id="lname" placeholder="Last Name">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="father_occupation">Father's occupation</label>
+                <input type="text" class="form-control" id="father_occupation" name="father_occupation"
+                  value="{% if user.family is defined %}{{user.family.father.occupation}}{% endif %}"
+                  placeholder="Father's occupation">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="father_phone">Phone no</label>
+                <input type="digit" class="form-control" name="father_phone" id="father_phone"
+                  value="{% if user.family is defined %}{{user.family.father.phone}}{% endif %}" placeholder="Phone no">
+              </div>
+
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="mother_occupation">Mother's occupation</label>
+                <input type="text" class="form-control" name="mother_occupation"
+                  value="{% if user.family is defined %}{{user.family.mother.occupation}}{% endif %}"
+                  id="mother_occupation" placeholder="Mother's Occupation">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="mother_phone">Phone no</label>
+                <input type="digit" class="form-control" name="mother_phone"
+                  value="{% if user.family is defined %}{{user.family.mother.phone}}{% endif %}" id="mother_phone"
+                  placeholder="Phone no">
+              </div>
+            </div>
+
+            <br>
+
+            <h4> Permanent Address : </h4>
+            <hr>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="permanent_address">Plot no, Society</label>
+                <input type="text" name="permanent_address"
+                  value="{% if user.address is defined %}{{user.address.permanent.address}}{% endif %}"
+                  class="form-control" placeholder="Enter city name" id="permanent_address">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputCity">City</label>
+                <input type="text" name="permanent_city"
+                  value="{% if user.address is defined %}{{user.address.permanent.city}}{% endif %}"
+                  class="form-control" placeholder="Enter city name" id="inputCity">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputState">State</label>
+                <select id="inputState" name="permanent_state"
+                  value="{% if user.address is defined %}{{user.address.permanent.state}}{% endif %}"
+                  class="form-control">
+                  <option selected>Choose...</option>
+                  {% for state in states %}
+                  {% if user.address is defined %}
+                  {% if user.address.permanent.state == state %}
+                  <option selected>{{state}}</option>
+                  {% else %}
+                  <option>{{state}}</option>
+                  {% endif %}
+
+                  {% else %}
+                  <option>{{state}}</option>
+                  {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+
+            </div>
+
+            <h4> Local Address : </h4>
+            <hr>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="local_address">Plot no, Society</label>
+                <input type="text" name="local_address"
+                  value="{% if user.address is defined %}{{user.address.local.address}}{% endif %}" class="form-control"
+                  placeholder="Enter city name" id="local_address">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="local_city">City</label>
+                <input type="text" name="local_city"
+                  value="{% if user.address is defined %}{{user.address.local.city}}{% endif %}" class="form-control"
+                  placeholder="Enter city name" id="local_city">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="local_state">State</label>
+                <select id="local_state" name="local_state"
+                  value="{% if user.address is defined %}{{user.address.local.state}}{% endif %}" class="form-control">
+                  <option selected>Choose...</option>
+                  {% for state in states %}
+                  {% if user.address is defined %}
+                  {% if user.address.local.state == state %}
+                  <option selected>{{state}}</option>
+                  {% else %}
+                  <option>{{state}}</option>
+                  {% endif %}
+                  {% else %}
+                  <option>{{state}}</option>
+                  {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+
+            </div>
+
+            <br>
+            <h4> Guardian Details : </h4>
+            <hr>
+
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="guardian_name">Name of local gardian or Hostel</label>
+                <input type="text" class="form-control" id="guardian_name" name="guardian_name"
+                  value="{% if user.guardian is defined %}{{user.guardian.name}}{% endif %}"
+                  placeholder="Gardian name or Hostel name">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="guardian_phone"> Guardian or Hostel Phone no</label>
+                <input type="digit" class="form-control" name="guardian_phone" value="" id="guardian_phone"
+                  value="{% if user.guardian is defined %}{{user.guardian.phone}}{% endif %}" placeholder="Phone no">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="guardian_address">Address of local guardian or hostel</label>
+              <input type="text" class="form-control" name="guardian_address" id="guardian_address"
+                value="{% if user.guardian is defined %}{{user.guardian.address}}{% endif %}"
+                placeholder="1234 Main St">
+            </div>
+
+
+            <input type="submit" class="btn btn-primary" value="submit">
+          </form>
+        </div>
+        <div class="tab-pane" role="tabpanel" id="tab-3">
+          <br>
+          <h3>Qualification</h3>
+          <form method="post" action="{{url_for('updateprofile',step=3)}}">
+            <table class="table table-hover table-light">
+              <thead>
+
+                <tr>
+                  <th scope="col">Exam</th>
+                  <th scope="col">Name of Board</th>
+                  <th scope="col">Year of passing</th>
+                  <th scope="col" class="text-center">Total marks</th>
+                  <th scope="col">Percentage</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <tr>
+                  <th scope="row">10th</th>
+                  <td>
+
+                    <input type="text" name="board10" class="form-control"
+                      value="{% if user.academic is defined %}{{user.academic.result.class_10.board}}{% endif %}">
+
+                  </td>
+                  <td>
+                    <input type="text" name="year10" class="form-control"
+                      value="{% if user.academic is defined %}{{user.academic.result.class_10.year}}{% endif %}">
+                  </td>
+                  <td>
+                    <input type="text" name="marks10" class="form-control"
+                      value="{% if user.academic is defined %}{{user.academic.result.class_10.marks}}{% endif %}">
+                  </td>
+                  <td> <input type="text" name="percentage10" class="form-control"
+                      value="{% if user.academic is defined %}{{user.academic.result.class_10.percentage}}{% endif %}">
+                  </td>
+                </tr>
+
+                <tr>
+                  <th scope="row" rowspan="1">12th</th>
+                  <td rowspan="1">
+
+                    <input type="text" name="board12" class="form-control"
+                      value="{% if user.academic is defined %}{{user.academic.result.class_12.board}}{% endif %}">
+
+                  </td>
+                  <td rowspan="1">
+                    <input type="text" name="year12" class="form-control"
+                      value="{% if user.academic is defined %}{{user.academic.result.class_12.year}}{% endif %}">
+                  </td>
+                  <td>
+                    <table>
+                      <tr>
+
+                        <td>12th<input type="text" name="marks12" id="marks12" class="form-control"
+                            value="{% if user.academic is defined %}{{user.academic.result.class_12.marks}}{% endif %}">
+                        </td>
+                        <td>Entrance<input type="text" name="entrance12" class="form-control"
+                            value="{% if user.academic is defined %}{{user.academic.result.class_12.entrance}}{% endif %}">
+                        </td>
+                      </tr>
+                    </table>
+
+                  </td>
+                  <td rowspan="1"> <input type="text" name="percentage12" class="form-control"
+                      value="{% if user.academic is defined %}{{user.academic.result.class_12.percentage}}{% endif %}">
+                  </td>
+                </tr>
+
+                <tr>
+                  <th scope="row">Diploma</th>
+                  <td>
+
+                    <input type="text" name="board_diploma" class="form-control"
+                      value="{% if user.academic is defined %}{{user.academic.result.diploma.board}}{% endif %}">
+
+                  </td>
+                  <td>
+                    <input type="text" name="year_diploma" class="form-control"
+                      value="{% if user.academic is defined %}{{user.academic.result.diploma.year}}{% endif %}">
+                  </td>
+                  <td>
+                    <input type="text" name="marks_diploma" class="form-control"
+                      value="{% if user.academic is defined %}{{user.academic.result.diploma.marks}}{% endif %}">
+                  </td>
+                  <td> <input type="text" name="percentage_diploma" class="form-control"
+                      value="{% if user.academic is defined %}{{user.academic.result.diploma.percentage}}{% endif %}">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="form-group">
+              <label for="extra_curicular">Extra Curicular Activites</label>
+              <input type="text" class="form-control"
+                value="{% if user.academic is defined %}{{user.academic.extra_curicular}}{% endif %}"
+                name="extra_curicular" id="extra_curicular" placeholder="Won 1st prize at ..">
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="update">
+          </form>
+          <hr>
+          <br>
+
+        </div>
+        <div class="tab-pane" role="tabpanel" id="tab-4">
+          <br>
+          <h3>Results</h3>
+          <div class="col-md-8">
+            {% for sem in user.result %}
+            {% if sem.subject != [] %}
+            <h3>Semester {{sem.semester}}</h3>
+            <form method="post" action="{{url_for('updateprofile',step=4,semester=sem.semester)}}">
+              <table class="table table-hover table-light">
+                <thead>
+
+                  <tr>
+                    <th scope="col">Sr no</th>
+                    <th scope="col">Subject Name</th>
+                    <th scope="col" class="text-center">status</th>
+                    <th scope="col" class="text-center">Attempts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for sub in sem.subject %}
+                  <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td>
+
+                      {{sub.subject_name}}
+                      <input type="hidden" value="{{sub}}_name">
+
+                    </td>
+                    <td class="text-center">
+                      {% if sub.status=='pass' %}
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-success active">
+                          <input type="radio" name="{{sub.subject_name}}_status" id="option1" autocomplete="off"
+                            value="pass" checked> Passed
+                        </label>
+                        <label class="btn btn-danger">
+                          <input type="radio" name="{{sub.subject_name}}_status" id="option2" autocomplete="off"
+                            value="fail">
+                          Fail
+                        </label>
+
+                      </div>
+                      {% elif sub.status=='fail' %}
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-success">
+                          <input type="radio" name="{{sub.subject_name}}_status" id="option1" autocomplete="off"
+                            value="pass">
+                          Pass
+                        </label>
+                        <label class="btn btn-danger active">
+                          <input type="radio" name="{{sub.subject_name}}_status" id="option2" autocomplete="off"
+                            value="fail" checked>
+                          Failed
+                        </label>
+
+                      </div>
+                      {% else %}
+                      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-success">
+                          <input type="radio" name="{{sub.subject_name}}_status" id="option1" autocomplete="off"
+                            value="pass">
+                          Pass
+                        </label>
+                        <label class="btn btn-danger">
+                          <input type="radio" name="{{sub.subject_name}}_status" id="option2" autocomplete="off"
+                            value="fail" checked>
+                          Fail
+                        </label>
+
+                      </div>
+                      {% endif %}
+                    </td>
+                    <td class="text-center">
+
+                      <input disabled type="digit" name="{{sub.subject_name}}_attempt" class="form-control"
+                        value="{{sub.attempts}}">
+
+
+                    </td>
+
+                  </tr>
+                  {% endfor %}
+
+
+                </tbody>
+              </table>
+
+
+
+              <input class="btn btn-primary" type="submit" value="update">
+            </form>
+            <hr>
+            {% else %}
+            <h3>Semester {{sem.semester}}</h3>
+            No subjects added yet..!!
+            <hr>
+            {% endif %}
+
+            {% endfor %}
+          </div>
+          <hr>
+          <br>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="login-dark" style="background-image:url(&quot;none&quot;);background-color:rgb(63,93,128);height: 700px;">
+        <form method="post" action="{{url_for('login')}}">
+            <h2 class="sr-only">Login Form</h2>
+            {% include 'includes/_messages.html' %}
+            <div class="illustration"><i class="icon ion-ios-locked-outline"></i></div>
+            <div class="form-group"><input class="form-control" type="email" name="email" placeholder="Email"></div>
+            <div class="form-group"><input class="form-control" type="password" name="password" placeholder="Password"></div>
+            <div class="form-group"><button class="btn btn-primary btn-block" type="submit">Log In</button></div>
+
+            <a class="forgot" href="#" data-toggle="modal" data-target="#forgotpassword">Forgot your email or password?</a>
+            
+        </form>
+        
+    </div>
+
+
+<!-- Modal -->
+  <div class="modal fade" id="forgotpassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Forgot password</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="{{url_for('changepassword')}}">
+        <div class="modal-body">
+            <input type="text" id="login" class="fadeIn second" name="email" placeholder="Email">
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+       
+          <input type="submit" class="btn btn-primary" value="Reset Password">
+        </div>
+    </form>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
