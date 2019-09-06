@@ -97,18 +97,20 @@ def index():
     date = datetime.today()
     users = mongo.db.users
     meetings = mongo.db.meetings
+    meeting_requests = []
     if 'logged_in' in session:
         if session['type'] == 'mentee':
             mentee = users.find_one({'email':session['email']})
             mentor = users.find_one({'meeting_request.batch':mentee['year']+' '+mentee['branch']+' '+mentee['division']+' batch '+mentee['batch']})
-            all_meetings = meetings.find({'mentor_email':mentor['email']})
-            meeting_requests = []
-
-            for r in all_meetings:
-                meetdate = datetime.strptime(r['date'], '%Y-%m-%d')
-                print(meetdate)
-                if meetdate >= date:
-                    meeting_requests.append({'venue':r['venue'],'batch':r['batch'],'time':r['time'],'date':r['date'],'subject':r['subject']})
+            if mentor is not None:
+                all_meetings = meetings.find({'mentor_email':mentor['email']})
+                
+                if all_meetings is not None:
+                    for r in all_meetings:
+                        meetdate = datetime.strptime(r['date'], '%Y-%m-%d')
+                        print(meetdate)
+                        if meetdate >= date:
+                            meeting_requests.append({'venue':r['venue'],'batch':r['batch'],'time':r['time'],'date':r['date'],'subject':r['subject']})
 
             return render_template("index.html",meeting_requests =meeting_requests)
 
