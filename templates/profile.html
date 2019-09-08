@@ -34,14 +34,14 @@
     </div>
     <div class="col-sm-9">
       <ul class="nav nav-tabs">
-        <li class="nav-item"><a class="nav-link active" role="tab" data-toggle="tab" href="#tab-1">Personal
+        <li class="nav-item"><a class="nav-link {% if session.step == 'personal'%}active{% endif %}" role="tab" data-toggle="tab" href="#tab-1">Personal
             Information</a></li>
-        <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-2">Family Information</a></li>
-        <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-3">Academics</a></li>
-        <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#tab-4">Results</a></li>
+        <li class="nav-item"><a class="nav-link {% if session.step == 'family'%}active{% endif %}" role="tab" data-toggle="tab" href="#tab-2">Family Information</a></li>
+        <li class="nav-item"><a class="nav-link {% if session.step == 'academics'%}active{% endif %}" role="tab" data-toggle="tab" href="#tab-3">Academics</a></li>
+        <li class="nav-item"><a class="nav-link {% if session.step == 'results'%}active{% endif %}" role="tab" data-toggle="tab" href="#tab-4">Results</a></li>
       </ul>
       <div class="tab-content">
-        <div class="tab-pane active" role="tabpanel" id="tab-1">
+        <div class="tab-pane {% if session.step == 'personal'%}active{% endif %}" role="tabpanel" id="tab-1">
           <hr>
           <form method="POST" action="{{url_for('updateprofile',step=1)}}">
             <div class="form-row">
@@ -133,7 +133,7 @@
             <button type="submit" class="btn btn-primary">Save</button>
           </form>
         </div>
-        <div class="tab-pane " role="tabpanel" id="tab-2">
+        <div class="tab-pane {% if session.step == 'family'%}active{% endif %}" role="tabpanel" id="tab-2">
           <br>
           <h4> Family Details : </h4>
           <hr>
@@ -308,7 +308,7 @@
             <input type="submit" class="btn btn-primary" value="submit">
           </form>
         </div>
-        <div class="tab-pane" role="tabpanel" id="tab-3">
+        <div class="tab-pane {% if session.step == 'academics'%}active{% endif %}" role="tabpanel" id="tab-3">
           <br>
           <h3>Qualification</h3>
           <form method="post" action="{{url_for('updateprofile',step=3)}}">
@@ -413,7 +413,7 @@
           <br>
 
         </div>
-        <div class="tab-pane" role="tabpanel" id="tab-4">
+        <div class="tab-pane {% if session.step == 'results'%}active{% endif %} role="tabpanel" id="tab-4">
           <br>
           <h3>Results</h3>
           <div class="col-md-8">
@@ -487,7 +487,7 @@
                     </td>
                     <td class="text-center">
 
-                      <input disabled type="digit" name="{{sub.subject_name}}_attempt" class="form-control"
+                      <input type="digit" name="{{sub.subject_name}}_attempt" class="form-control"
                         value="{{sub.attempts}}">
 
 

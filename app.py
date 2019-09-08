@@ -236,6 +236,8 @@ def register():
             mail.send(msg)
             flash('Mentee Added Successfully','success')
             return redirect(url_for('login'))
+        else:
+            flash('Email id already exists','danger')
     return render_template("register.html")
 
 @app.route('/verify/<code>',methods = ['POST','GET'])
@@ -421,6 +423,7 @@ def profile():
 @app.route('/profile/<step>',methods = ['POST','GET'])
 @is_logged_in
 def updateprofile(step):
+    session['step'] = 'perosnal'
     if request.method == 'POST':
         users = mongo.db.users
         user = users.find_one({'email':session['email']})
@@ -430,17 +433,19 @@ def updateprofile(step):
             return redirect(url_for('index'))
         else:
             if step == '1':
+                session['step'] = 'personal'
                 done = users.update_one({'email' : request.form['email']},{'$set':{'fname':request.form['fname'],'mname':request.form['mname'],'lname':request.form['lname'],
                 'email':request.form['email'],'dob':request.form['dob'],'phone':request.form['phone'],'personal.hobbies':request.form['hobbies'],'personal.weakness':request.form['weakness'],
                 'personal.strength':request.form['strength'],'personal.majorillness':request.form['majorillness'],'personal.majoralergic':request.form['majoralergic']}})
                 if done:
-                    flash('profile updated successfully !!','success')
+                    flash('Personal information updated successfully !!','success')
                     return redirect(url_for('profile'))
                 else:
                     flash('Couldn\'t update profile, Try again !!','danger')
                     return redirect(url_for('profile'))
             
             if step == '2':
+                session['step'] = 'family'
                 done = users.update_one({'email':session['email']},{'$set':{'family.father.fname':user['mname'],'family.father.lname':user['lname'],'family.father.mname':request.form['father_mname'],
                 'family.mother.mname':user['mname'],'family.mother.lname':user['lname'],'family.mother.fname':request.form['mother_fname'],
                 'family.father.occupation':request.form['father_occupation'],'family.mother.occupation':request.form['mother_occupation'],
@@ -452,6 +457,7 @@ def updateprofile(step):
                 else:
                     flash('Couldn\'t update profile, Try again !!','danger')
             if step == '3':
+                session['step'] = 'academics'
                 done = users.update_one({'email':session['email']},{'$set':{'academic.result.class_10.board':request.form['board10'],'academic.result.class_10.year':request.form['year10'],'academic.result.class_10.marks':request.form['marks10'],'academic.result.class_10.percentage':request.form['percentage10'],
                 'academic.result.class_12.board':request.form['board12'],'academic.result.class_12.year':request.form['year12'],'academic.result.class_12.marks':request.form['marks12'],'academic.result.class_12.percentage':request.form['percentage12'],'academic.result.class_12.marks':request.form['marks12'],'academic.result.class_12.entrance':request.form['entrance12'],
                 'academic.result.diploma.board':request.form['board_diploma'],'academic.result.diploma.year':request.form['year_diploma'],'academic.result.diploma.marks':request.form['marks_diploma'],'academic.result.diploma.percentage':request.form['percentage_diploma'],'academic.extra_curicular':request.form['extra_curicular']}})
@@ -461,6 +467,7 @@ def updateprofile(step):
                     flash('Couldn\'t update profile, Try again !!','danger')
 
             if step == '4':
+                session['step'] = 'results'
                 subjects = mongo.db.subjects
                 all_subjects = subjects.find_one({'branch':session['branch']})
                 sub_list=[]
@@ -481,12 +488,14 @@ def updateprofile(step):
                             
                             users.update_one({'email':session['email'],'result.semester':semester_no},{'$pull':{'result.$.subject':{'subject_name':s1}}})
                             
-                            users.update_one({'email':session['email'],'result.semester':semester_no},{'$push':{'result.$.subject':{'subject_name':s1,'status':request.form[s1+'_status'],'attempts':request.form[s1+'_attempt']}}})
+                            users.update_one({'email':session['email'],'result.semester':semester_no},{'$push':{'result.$.subject':{'subject_name':s1,'status':request.form[s1+'_status'],'attempts':int(request.form[s1+'_attempt'])}}})
                             if request.form[s1+'_status'] == 'fail':
                                 sem_status = 'ATKT'
                                 users.update_one({'email':session['email'],'result.semester':semester_no+1},{'$push':{'result.$.subject':{'subject_name':s1,'status':'null','attempts':int(request.form[s1+'_attempt'])+1}}})
                                 print('updated in '+str(semester_no+1))
                             elif request.form[s1+'_status'] == 'pass':
+                                
+                                #users.update_one({'email':session['email'],'result.semester':semester_no-1},{'$push':{'result.$.subject':{'subject_name':s1,'status':'pass','attempts':int(request.form[s1+'_attempt'])}}})
                                 users.update_one({'email':session['email'],'result.semester':semester_no+1},{'$pull':{'result.$.subject':{'subject_name':s1}}})
                         users.update_one({'email':session['email'],'result.semester':semester_no},{'$set':{'result.$.status':sem_status}})
 
