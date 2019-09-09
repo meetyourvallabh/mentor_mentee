@@ -4,6 +4,8 @@
 
 <div class="contact-clean" style="margin-top:40px;">
     {% include 'includes/_messages.html' %}
+    <div class="row">
+        <div class="col-md-5">
     <form action="{{url_for('meeting_request')}}" method="POST">
         <h2 class="text-center">Generate Meeting request</h2>
         <div class="form-group">
@@ -41,5 +43,36 @@
             <input type="submit" value="Generate">
         </div>
     </form>
+    </div>
+    <div class="col-md-5">
+        <table class="table table-hover table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Venue</th>
+                    <th scope="col">Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for meeting in all_meetings %}
+                <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td>{{meeting.subject}}</td>
+                    <td>{{meeting.time}}</td>
+                    <td>{{meeting.date}}</td>
+                    <td>
+                        {{meeting.venue}}
+                    </td>
+                    <td><a class="btn btn-sm btn-danger" href="{{url_for('delete_meeting',id=meeting.meeting_id)}}">Delete</a></td>
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    </div>
 </div>
 {% endblock %}

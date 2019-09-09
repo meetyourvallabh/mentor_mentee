@@ -626,8 +626,8 @@ def send_mail():
             for mentee in all_mentees:
                 all_receipents.append(mentee['email'])
         
-        msg = Message('MM: '+session['fname']+' '+request.form['subject'], sender=session['email'], recipients=all_receipents)
-        msg_string = request.form['subject']
+        msg = Message('MM: '+session['fname']+' - '+request.form['subject'], sender=session['email'], recipients=all_receipents)
+        msg_string = request.form['message']
         msg.body = msg_string
         msg.html = msg.body
         mail.send(msg)
@@ -656,20 +656,48 @@ def dashboard():
         return render_template("dashboard.html",all_mentees = all_mentees,all_mentors = all_mentors)
 
 @app.route('/meeting_request',methods = ['POST','GET'])
+@is_logged_in
+@is_mentor
 def meeting_request():
     users = mongo.db.users
     meetings = mongo.db.meetings
-    mentor = users.find_one({'email':session['email']})
+    all_meetings = meetings.find()
+    mentor = users.find_one({'email':session['email'],'type':'mentor'})
     if request.method == 'POST':
         #users.update_one({'email':session['email']},{'$push':{'meeting_request':{'subject':request.form['subject'],
         #'time':request.form['time'],'venue':request.form['venue'],'date':request.form['date'],'batch':request.form['batch'],
         #'done':'no'}}})
         meeting_id = request.form['subject']+str(randint(1111,9999))
-        meetings.insert_one({'mentor_email':session['email'],'meeting_id':meeting_id,'subject':request.form['subject'],'time':request.form['time'],'venue':request.form['venue'],'date':request.form['date'],'batch':request.form['batch'],
-        'done':'no'})
+        #meetings.insert_one({'mentor_email':session['email'],'meeting_id':meeting_id,'subject':request.form['subject'],'time':request.form['time'],'venue':request.form['venue'],'date':request.form['date'],'batch':request.form['batch'],'done':'no'})
+
+        #mentor1 = users.find_one({'email':session['email'],'type':'mentor'})
+        #for bat in mentor1['batch']:
+        #    print(bat)
+        mentees = users.find({'branch':mentor['branch'],'year':mentor['batch'][0]['year'],'batch':mentor['batch'][0]['batch_name'],'division':mentor['batch'][0]['division']})
+        
+        all_receipents = []
+
+        for mentee in mentees:
+            all_receipents.append(mentee['email'])
+
+        
+
+        msg = Message('MM: '+session['fname']+' - Meeting regarding '+request.form['subject'], sender=session['email'], recipients=all_receipents)
+        msg_string = '<h3>Subject :</h3>'+request.form['subject'] + '<br><h3>Time :</h3>' + request.form['time'] + '<br><h3>Date :</h3>' + request.form['date'] + '<br><h3>Venue :</h3>' + request.form['venue']
+        msg.body = msg_string
+        msg.html = msg.body
+        mail.send(msg)
 
         flash('Meeting request generated successfully','success')
-    return render_template("meeting_request.html",mentor = mentor)
+    return render_template("meeting_request.html",mentor = mentor, all_meetings = all_meetings)
+
+
+@app.route('/delete_meeting/<id>', methods=['GET', 'POST'])
+def delete_meeting(id):
+    meetings = mongo.db.meetings
+    meetings.delete_one({'meeting_id':id})
+    flash('Meeting request deleted successfully','success')
+    return redirect(url_for('meeting_request'))
 
 
 @app.route('/delete/mentee/<email>')

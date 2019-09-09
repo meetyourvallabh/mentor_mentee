@@ -4,7 +4,17 @@
 {% block body %}
 <div class="container" style="margin-top:100px;">
     {% include 'includes/_messages.html' %}
-    hii {{session.fname}}
+
+
+    <div class="jumbotron">
+        <h1 class="display-4">Welcome Back ! {{session.fname}}</h1>
+        <p class="lead">This web portal is designed for the mentors and their mentees.</p>
+        <hr class="my-4">
+        <p>It supports mentors and mentees to manage their profiles and meeting details.</p>
+        <p class="lead">
+          <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+        </p>
+      </div>
 
     {% if session.logged_in %}
     {% if session.type == 'mentee' %}
