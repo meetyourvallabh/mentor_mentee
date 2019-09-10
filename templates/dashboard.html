@@ -31,6 +31,7 @@
             </td>
             <td><a class="btn btn-sm btn-danger" href="#">Delete</a></td>
             <td><a class="btn btn-primary" href="{{url_for('view_profile',email=mentee.email)}}">View profile</a></td>
+            <td><a class="btn btn-primary" href="{{url_for('view_chart',email=mentee.email)}}">Progress Chart</a></td>
             <td><a class="btn btn-primary"
                 href="{{url_for('view_profile',email=mentee.email,option='download')}}">Download</a></td>
           </tr>

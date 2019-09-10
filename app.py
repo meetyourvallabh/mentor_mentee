@@ -434,9 +434,7 @@ def updateprofile(step):
         else:
             if step == '1':
                 session['step'] = 'personal'
-                done = users.update_one({'email' : request.form['email']},{'$set':{'fname':request.form['fname'],'mname':request.form['mname'],'lname':request.form['lname'],
-                'email':request.form['email'],'dob':request.form['dob'],'phone':request.form['phone'],'personal.hobbies':request.form['hobbies'],'personal.weakness':request.form['weakness'],
-                'personal.strength':request.form['strength'],'personal.majorillness':request.form['majorillness'],'personal.majoralergic':request.form['majoralergic']}})
+                done = users.update_one({'email' : request.form['email']},{'$set':{'fname':request.form['fname'],'mname':request.form['mname'],'lname':request.form['lname'],'email':request.form['email'],'dob':request.form['dob'],'phone':request.form['phone'],'prn':request.form['prn'],'admission_year':request.form['admission_year'],'personal.hobbies':request.form['hobbies'],'personal.weakness':request.form['weakness'],'personal.strength':request.form['strength'],'personal.majorillness':request.form['majorillness'],'personal.majoralergic':request.form['majoralergic'],'personal.blood_group':request.form['blood_group'],'personal.caste':request.form['caste'],'personal.religion':request.form['religion'],'admission_category':request.form['admission_category']}})
                 if done:
                     flash('Personal information updated successfully !!','success')
                     return redirect(url_for('profile'))
@@ -479,6 +477,16 @@ def updateprofile(step):
                 #    if semester['semester'] == int(request.args.get('semester')):
                 #        for subject in semester['subject']:
                 #            print(subject['subject_name'])
+                try:
+                    sgpa = float(request.form['sgpa'])
+                    if not sgpa < 10.1:
+                        flash('Please enter number between 1.0 to 10.0 in sgpa field','danger')
+                        return redirect(url_for('profile'))
+
+                except:
+                    flash('Please enter number in sgpa field','danger')
+                    return redirect(url_for('profile'))
+
                 
                 for semester in user['result']:
                     sem_status = 'all clear'
@@ -497,7 +505,7 @@ def updateprofile(step):
                                 
                                 #users.update_one({'email':session['email'],'result.semester':semester_no-1},{'$push':{'result.$.subject':{'subject_name':s1,'status':'pass','attempts':int(request.form[s1+'_attempt'])}}})
                                 users.update_one({'email':session['email'],'result.semester':semester_no+1},{'$pull':{'result.$.subject':{'subject_name':s1}}})
-                        users.update_one({'email':session['email'],'result.semester':semester_no},{'$set':{'result.$.status':sem_status}})
+                        users.update_one({'email':session['email'],'result.semester':semester_no},{'$set':{'result.$.status':sem_status,'result.$.sgpa':sgpa}})
 
                 flash('Data updated successfully','success')
     return redirect(url_for('profile'))
@@ -775,7 +783,30 @@ def manage_subjects():
     return render_template("manage_subjects.html",all_subjects = all_subjects)
 
 
+
+
+@app.route('/achievements', methods=['GET', 'POST'])
+def achievements():
+    users = mongo.db.users
+    user = users.find_one({'email':session['email']})
+    if request.method == 'POST':
+        done = users.update_one({'email':session['email']},{'$push':{'achievements':{'achievement':request.form['achievement'],'category':request.form['category'],'date':request.form['date']}}})
+        if done is not None:
+            flash('Achievement added successfully','success')
+            return redirect(url_for('achievements'))
+        else:
+            flash('Something went wrong...!!!','danger')
+
+    return render_template("achievements.html",user = user)
     
+
+@app.route('/view_chart/<email>', methods=['GET', 'POST'])
+def view_chart(email):
+    users = mongo.db.users
+    user = users.find_one({'email':email})
+    return render_template("view_chart.html",user = user)
+
+
 
 @app.route('/logout')
 def logout():

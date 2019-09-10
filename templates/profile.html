@@ -84,7 +84,7 @@
 
               <div class="form-group col-md-4">
                 <label for="prn">PRN number</label>
-                <input type="text" class="form-control" value="{% if user.prn is defined %}{{user.prn}}{% endif %}"
+                <input type="text" name="prn" class="form-control" value="{% if user.prn is defined %}{{user.prn}}{% endif %}"
                   id="prn" placeholder="PRN number">
               </div>
 
@@ -94,8 +94,40 @@
                   value="{% if user.admission_year is defined %}{{user.admission_year}}{% endif %}"
                   placeholder="Year of Admission">
               </div>
+
+              <div class="form-group col-md-4">
+                <label for="admission_year">Category of Admission</label>
+                <input type="text" class="form-control" name="admission_category" id="admission_category"
+                  value="{% if user.admission_category is defined %}{{user.admission_category}}{% endif %}"
+                  placeholder="Category of Admission">
+              </div>
             </div>
             <br>
+            <hr>
+            <br>
+            <div class="form-row">
+
+              <div class="form-group col-md-4">
+                <label for="blood_group">Blood Group</label>
+                <input type="text" class="form-control" name="blood_group" value="{% if user.personal.blood_group is defined %}{{user.personal.blood_group}}{% endif %}"
+                  id="blood_group" placeholder="B+">
+              </div>
+
+              <div class="form-group col-md-4">
+                <label for="caste">Caste</label>
+                <input type="text" class="form-control" name="caste" id="admission_year"
+                  value="{% if user.personal.caste is defined %}{{user.personal.caste}}{% endif %}"
+                  placeholder="Caste">
+              </div>
+
+              <div class="form-group col-md-4">
+                <label for="religion">Religion</label>
+                <input type="text" class="form-control" name="religion" id="religion"
+                  value="{% if user.personal.religion is defined %}{{user.personal.religion}}{% endif %}"
+                  placeholder="Religion">
+              </div>
+            </div>
+
             <hr>
             <br>
             <div class="form-group col-md-6">
@@ -128,6 +160,7 @@
                 value="{% if user.personal is defined %}{{user.personal.majoralergic}}{% endif %}" id="majoralergic"
                 placeholder="Daibetes, etc.">
             </div>
+
 
 
             <button type="submit" class="btn btn-primary">Save</button>
@@ -499,9 +532,9 @@
 
                 </tbody>
               </table>
-
-
-
+              <label for="sgpa">SGPA</label>
+              <input class="form-control" name="sgpa" id="sgpa" type="text" placeholder="SGPA" value="{% if sem.sgpa is defined %} {{sem.sgpa}} {% endif %}">
+              <br>
               <input class="btn btn-primary" type="submit" value="update">
             </form>
             <hr>

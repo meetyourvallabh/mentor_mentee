@@ -529,6 +529,7 @@
         text-align: center;
     }
 </style>
+
 <div class="container-fluid" style="margin-top:100px;">
 
 
@@ -584,6 +585,44 @@
                 No address updated yet..
                 {% endif %}
             </p>
+
+        </div>
+
+        <div class="box">
+
+            <p class="title">
+                <i class="fa fa-asterisk"></i>
+                College Details
+            </p>
+
+
+            
+            <p class="padd-top">
+                <b>PRN :</b>
+                {% if user.prn is defined %}
+                    {{user.prn}}
+                {% else %}
+                    Not filled yet..
+                {% endif %}
+            </p>
+            <p>
+                <b>Year of Admission :</b>
+                {% if user.admission_year is defined %}
+                    {{user.admission_year}}
+                {% else %}
+                    Not filled yet..
+                {% endif %}
+            </p>
+            <p>
+                <b>Category of Admission :</b>
+                {% if user.admission_category is defined %}
+                    {{user.admission_category}}
+                {% else %}
+                    Not filled yet..
+                {% endif %}
+            </p>
+            
+            
 
         </div>
 
@@ -688,8 +727,29 @@
                 Academic Information is not filled yet..
                 {% endif %}
             </p>
+            
         </div>
+        <div class="box">
+                <p class="title">
+                    <i class="fa fa-flag"></i>
+    
+                    Achievements
+                </p>
+                <br>
+                <p class="padd-top">
+                    {% if user.achievements is defined %}
 
+                    {% for achievement in user.achievements %}
+                    <p>{{loop.index}}. {{achievement.achievement}}  -  ({{achievement.date}})</p>
+                    {% endfor %}
+
+
+                    {% else %}
+                    Achievements Information is not filled yet..
+                    {% endif %}
+                </p>
+                
+            </div>
         <div class="box">
             <p class="title">
                 <i class="fa fa-users"></i>
@@ -750,6 +810,9 @@
             {% for sem in user.result %}
 
             {% if sem.subject != [] %}
+            <br>
+            <hr>
+            <br>
             <h3> <b> Semester {{sem.semester}} </b></h3>
             <table class="table table-hover table-light">
                 <thead>
@@ -787,8 +850,12 @@
 
                 </tbody>
             </table>
-            <hr>
-            Result : {{sem.status}}
+            
+            <b>Result :</b> {{sem.status}}
+            {% if sem.status == 'all clear' %}
+            <br>
+            <b>SGPA :</b> {{sem.sgpa}}
+            {% endif %}
             <br>
 
             {% endif %}
@@ -802,12 +869,64 @@
         </div>
 
 
-
-
+        <div class="row my-3">
+                <div class="col">
+                    <h4>Progress Chart</h4>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <canvas id="myChart" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
 
     </section>
 
+
+            
+
+
+
+
+    <script>
+    var ctx = document.getElementById('myChart');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6', 'Sem 7', 'Sem 8',],
+            datasets: [{
+                label: '# of SGPA',
+                data: [{% for obj in user.result %} {{obj.sgpa}}, {% endfor %}],
+                
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+    </script>
 </div>
+
 
 <footer style="background:#51b1ff;color:white"> Designed by MYO - MakeYourOwn </footer>
 
