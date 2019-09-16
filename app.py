@@ -11,7 +11,13 @@ import pdfkit
 import itertools
 
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe")
+
 app = Flask(__name__)
+
+app.config.from_envvar('APPLICATION_SETTING')
+
 
 ALLOWED_EXTENSIONS = set(['pdf', 'docx', 'doc'])
 UPLOAD_DIRECTORY = "/static/"
@@ -546,7 +552,7 @@ def documents():
     users = mongo.db.users
     user = users.find_one({'email':session['email']})
     if request.method == 'POST':
-        path = os.path.abspath('static/img/'+session['fname']+' '+session['mname']+' '+session['lname']+' '+user['year']+' '+user['branch']+' '+user['division'])
+        path = os.path.abspath(basedir+'static/img/'+session['fname']+' '+session['mname']+' '+session['lname']+' '+user['year']+' '+user['branch']+' '+user['division'])
         if not os.path.exists(path):
             os.makedirs(path)
         app.config['UPLOAD_FOLDER'] = path
@@ -584,8 +590,8 @@ def pdf_profile(email,option):
         user = users.find_one({'email':email})
         rendered =  render_template("pdf_profile.html",user = user)
         #rendered =  render_template("example.html")
-        css = ['static/assets/css/view_profile.css','static/assets/bootstrap/css/bootstrap.min.css']
-        pdf = pdfkit.from_string(rendered, False, css = css)
+        css = [basedir+'/static/assets/css/view_profile.css',basedir+'/static/assets/bootstrap/css/bootstrap.min.css']
+        pdf = pdfkit.from_string(rendered, False, css = css,configuration=config)
         response = make_response(pdf)
         response.headers['Content-Type'] = 'application/pdf'
         if option == 'view':
@@ -672,11 +678,11 @@ def meeting_request():
     all_meetings = meetings.find()
     mentor = users.find_one({'email':session['email'],'type':'mentor'})
     if request.method == 'POST':
-        #users.update_one({'email':session['email']},{'$push':{'meeting_request':{'subject':request.form['subject'],
-        #'time':request.form['time'],'venue':request.form['venue'],'date':request.form['date'],'batch':request.form['batch'],
-        #'done':'no'}}})
+        users.update_one({'email':session['email']},{'$push':{'meeting_request':{'subject':request.form['subject'],
+        'time':request.form['time'],'venue':request.form['venue'],'date':request.form['date'],'batch':request.form['batch'],
+        'done':'no'}}})
         meeting_id = request.form['subject']+str(randint(1111,9999))
-        #meetings.insert_one({'mentor_email':session['email'],'meeting_id':meeting_id,'subject':request.form['subject'],'time':request.form['time'],'venue':request.form['venue'],'date':request.form['date'],'batch':request.form['batch'],'done':'no'})
+        meetings.insert_one({'mentor_email':session['email'],'meeting_id':meeting_id,'subject':request.form['subject'],'time':request.form['time'],'venue':request.form['venue'],'date':request.form['date'],'batch':request.form['batch'],'done':'no'})
 
         #mentor1 = users.find_one({'email':session['email'],'type':'mentor'})
         #for bat in mentor1['batch']:
@@ -823,4 +829,4 @@ def logout():
 
 if __name__ == '__main__':
     app.secret_key='secret123'
-    app.run(host='0.0.0.0',debug='true',port='5000')
+    app.run(host='0.0.0.0',debug='true',port='80')
