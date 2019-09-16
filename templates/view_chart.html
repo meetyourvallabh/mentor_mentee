@@ -11,14 +11,35 @@
         </div>
         <div class="row my-2">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card" style="min-height: 200px;">
                     <div class="card-body">
-                        <canvas id="myChart" height="100"></canvas>
+                        <canvas id="myChart" height="auto"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <br>
+    <hr>
+    <br>
+    <div class="container" style="margin-top:100px;">
+        <div class="row my-3">
+            <div class="col">
+                <h4>Achivement Chart</h4>
+            </div>
+        </div>
+        <div class="row my-2">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <canvas id="myBarChart" height="auto"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
 <script>
@@ -51,6 +72,60 @@
                     }]
                 }
             }
+        });
+
+        var ctx1 = document.getElementById("myBarChart")
+        var myBarChart = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: ['Technical','Non-Techincal','Sports','Cultural','Papers Published','Other'],
+            datasets: [{
+                    label: '# of Achivements',
+                    data: [{{a_count.technical}},{{a_count.non_technical}},{{a_count.sports}},{{a_count.cultural}},{{a_count.papers_published}},{{a_count.other}}],
+                    
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+        },
+        options: {
+            scales: {
+                xAxes: [{
+                    barPercentage: 1,
+                    barThickness: 40,
+                    maxBarThickness: 50,
+                    minBarLength: 2,
+                    gridLines: {
+                        offsetGridLines: true
+                    },
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true,
+                        suggestedMax:10
+                    },
+                    
+                }]
+            }
+        }
+
         });
         </script>
 

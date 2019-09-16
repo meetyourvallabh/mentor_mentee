@@ -12,11 +12,11 @@ import itertools
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe")
+#config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe")
 
 app = Flask(__name__)
 
-app.config.from_envvar('APPLICATION_SETTING')
+#app.config.from_envvar('APPLICATION_SETTING')
 
 
 ALLOWED_EXTENSIONS = set(['pdf', 'docx', 'doc'])
@@ -189,7 +189,7 @@ def changepassword():
         if founduser:
             token=str(randint(11111,99999))
             msg = Message('MM: Password reset link', sender='makeyourown48@gmail.com', recipients=[request.form['email']])
-            msg_string = '<h1>Hello, ' + founduser['fname'] + '</h1><br><br> Click on below button to change your account password: <br> http://localhost:5000/changepasswordtoken/'+token
+            msg_string = '<h1>Hello, ' + founduser['fname'] + '</h1><br><br> Click on below button to change your account password: <br> http://mm.mcoeit.com/changepasswordtoken/'+token
             msg.body = msg_string
             msg.html = msg.body
             mail.send(msg)
@@ -236,7 +236,7 @@ def register():
             users.insert_one({'fname':request.form['fname'],'password':hashpass,'verification':verification_code,'approved':'no','mname':request.form['mname'],'lname':request.form['lname'],'type':'mentee' ,
             'email':request.form['email'],'phone':request.form['phone'], 'branch':request.form['branch'],'year':request.form['year'],'division':request.form['division'],'batch':request.form['batch']})
             msg = Message('MM: Mentee account registered successfully', sender='makeyourown48@gmail.com', recipients=[request.form['email']])
-            msg_string = '<h1>Hello ' + request.form['fname']+ request.form['lname'] + '</h1><br> You are registered sucessfully !! <br><br> Click on below link to verify your account: <br> http://localhost:5000/verify/'+verification_code
+            msg_string = '<h1>Hello ' + request.form['fname']+ request.form['lname'] + '</h1><br> You are registered sucessfully !! <br><br> Click on below link to verify your account: <br> http://mm.mcoeit.com/verify/'+verification_code
             msg.body = msg_string
             msg.html = msg.body
             mail.send(msg)
@@ -523,9 +523,9 @@ def upload():
     users = mongo.db.users
     user = users.find_one({'email':session['email']})
     if session['type'] == 'mentee':
-        path = os.path.abspath('static/img/'+session['fname']+' '+session['mname']+' '+session['lname']+' '+user['year']+' '+user['branch']+' '+user['division'])
+        path = os.path.abspath(basedir+'/static/img/'+session['fname']+' '+session['mname']+' '+session['lname']+' '+user['year']+' '+user['branch']+' '+user['division'])
     else:
-        path = os.path.abspath('static/img/'+session['fname']+' '+session['mname']+' '+session['lname']+' '+user['branch'])
+        path = os.path.abspath(basedir+'/static/img/'+session['fname']+' '+session['mname']+' '+session['lname']+' '+user['branch'])
     if not os.path.exists(path):
         os.makedirs(path)
     app.config['UPLOAD_FOLDER'] = path
@@ -552,7 +552,8 @@ def documents():
     users = mongo.db.users
     user = users.find_one({'email':session['email']})
     if request.method == 'POST':
-        path = os.path.abspath(basedir+'static/img/'+session['fname']+' '+session['mname']+' '+session['lname']+' '+user['year']+' '+user['branch']+' '+user['division'])
+        path = os.path.abspath(basedir+'/static/img/'+session['fname']+' '+session['mname']+' '+session['lname']+' '+user['year']+' '+user['branch']+' '+user['division']+'/documents')
+        print(path)
         if not os.path.exists(path):
             os.makedirs(path)
         app.config['UPLOAD_FOLDER'] = path
@@ -566,9 +567,37 @@ def documents():
             # add your custom code to check that the uploaded file is a valid image and not a malicious file (out-of-scope for this post)
             file.save(f)
             
-            users.update_one({'email':session['email']},{'$push':{'document':{'caption':request.form['caption'],'path':'img/'+session['fname']+' '+session['mname']+' '+session['lname']+' '+user['year']+' '+user['branch']+' '+user['division']+'/'+file.filename}}})
+            doc_id = str(randint(11,99)) +request.form['caption'][:10]+ str(randint(11,99))
+            users.update_one({'email':session['email']},{'$push':{'document':{'doc_id':doc_id,'caption':request.form['caption'],'path':'img/'+session['fname']+' '+session['mname']+' '+session['lname']+' '+user['year']+' '+user['branch']+' '+user['division']+'/documents/'+file.filename}}})
             flash('Image uploaded successfully','success')
+            
     return render_template("documents.html",user=user)
+
+@app.route('/delete_document/<id>', methods=['GET', 'POST'])
+@is_logged_in
+def delete_document(id):
+    users = mongo.db.users
+    user = users.find_one({'email':session['email']},{'document': {'$elemMatch': {'doc_id':id}}})
+    #for doc in user['document']:
+    #    print(doc)
+    print(user['document'][0]['path'])
+    #print(user)
+    if os.path.exists(basedir+'/static/'+user['document'][0]['path']):
+        os.remove(basedir+'/static/'+user['document'][0]['path'])
+    
+    users.update_one({'email': session['email']}, 
+    { '$pull': { "document" : { 'doc_id': id } } })
+    flash('Document deleted successfully','success')
+
+    return redirect(url_for('documents'))
+
+
+@app.route('/view_documents/<email>')
+@is_mentor
+def view_documents(email):
+    users = mongo.db.users
+    user = users.find_one({'email':email})
+    return render_template("view_documents.html",user = user)
 
 
 @app.route('/view_profile/<email>',methods = ['POST','GET'])
@@ -591,7 +620,8 @@ def pdf_profile(email,option):
         rendered =  render_template("pdf_profile.html",user = user)
         #rendered =  render_template("example.html")
         css = [basedir+'/static/assets/css/view_profile.css',basedir+'/static/assets/bootstrap/css/bootstrap.min.css']
-        pdf = pdfkit.from_string(rendered, False, css = css,configuration=config)
+        #pdf = pdfkit.from_string(rendered, False, css = css,configuration=config)
+        pdf = pdfkit.from_string(rendered, False, css = css)
         response = make_response(pdf)
         response.headers['Content-Type'] = 'application/pdf'
         if option == 'view':
@@ -810,7 +840,40 @@ def achievements():
 def view_chart(email):
     users = mongo.db.users
     user = users.find_one({'email':email})
-    return render_template("view_chart.html",user = user)
+    user1 = users.find_one({'email':email})
+    achievements_count = {
+        'technical':0,
+        'non_technical':0,
+        'sports':0,
+        'cultural':0,
+        'papers_published':0,
+        'other':0
+
+
+    }
+
+
+    for achievement in user1['achievements']:
+
+        if achievement['category'] == 'technical':
+            achievements_count['technical'] +=1
+        elif achievement['category'] == 'non_technical':
+            achievements_count['non_technical'] +=1
+        elif achievement['category'] == 'sports':
+            achievements_count['sports'] +=1
+        elif achievement['category'] == 'cultural':
+            achievements_count['cultural'] +=1
+        elif achievement['category'] == 'papers_published':
+            achievements_count['papers_published'] +=1
+        elif achievement['category'] == 'other':
+            achievements_count['other'] +=1
+
+
+
+    print(achievements_count['technical'])
+        
+
+    return render_template("view_chart.html",user = user,a_count = achievements_count)
 
 
 
@@ -829,4 +892,4 @@ def logout():
 
 if __name__ == '__main__':
     app.secret_key='secret123'
-    app.run(host='0.0.0.0',debug='true',port='80')
+    app.run(host='0.0.0.0',debug='true',port='5000')

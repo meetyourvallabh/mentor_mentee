@@ -37,8 +37,8 @@
                                 class="card-img-top scale-on-hover" /></a>
                         <div class="card-body">
                             <h6><a href="#">{{image.caption}}</a></h6>
-                            <p class="text-muted card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Nunc quam urna.</p>
+                            <a class="btn btn-danger" style="color:white;" href="{{url_for('delete_document',id=image.doc_id)}}">Delete</a>
+                            
                         </div>
                     </div>
                 </div>

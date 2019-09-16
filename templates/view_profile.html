@@ -544,6 +544,7 @@
 <div class="container">
     <a class="btn btn-primary" href="{{url_for('pdf_profile',email=user.email,option='download')}}">Download as PDF</a>
     <a class="btn btn-primary" href="{{url_for('pdf_profile',email=user.email,option='view')}}">View as PDF</a>
+    <a class="btn btn-primary" href="{{url_for('view_documents',email=user.email)}}">Documents</a>
 </div>
 <div class="content">
     <aside class="info ">

@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="container" style="margin-top:100px;">
+    {% include 'includes/_messages.html' %}
+    
+
+
+    <section class="portfolio-block projects-cards">
+        <div class="container">
+            <div class="heading">
+                <h2>Documents</h2>
+            </div>
+            <div class="row">
+                {% for image in user.document %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0"><a href="#"><img src="{{url_for('static',filename=image.path)}}" alt="Card Image"
+                                class="card-img-top scale-on-hover" /></a>
+                        <div class="card-body">
+                            <h6><a href="#">{{image.caption}}</a></h6>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+
+
+
+
+            </div>
+        </div>
+    </section>
+</div>
+
+
+{% endblock %}
