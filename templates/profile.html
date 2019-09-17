@@ -109,21 +109,21 @@
 
               <div class="form-group col-md-4">
                 <label for="blood_group">Blood Group</label>
-                <input type="text" class="form-control" name="blood_group" value="{% if user.personal.blood_group is defined %}{{user.personal.blood_group}}{% endif %}"
+                <input type="text" class="form-control" name="blood_group" value="{% if user.personal is defined %}{{user.personal.blood_group}}{% endif %}"
                   id="blood_group" placeholder="B+">
               </div>
 
               <div class="form-group col-md-4">
                 <label for="caste">Caste</label>
                 <input type="text" class="form-control" name="caste" id="admission_year"
-                  value="{% if user.personal.caste is defined %}{{user.personal.caste}}{% endif %}"
+                  value="{% if user.personal is defined %}{{user.personal.caste}}{% endif %}"
                   placeholder="Caste">
               </div>
 
               <div class="form-group col-md-4">
                 <label for="religion">Religion</label>
                 <input type="text" class="form-control" name="religion" id="religion"
-                  value="{% if user.personal.religion is defined %}{{user.personal.religion}}{% endif %}"
+                  value="{% if user.personal is defined %}{{user.personal.religion}}{% endif %}"
                   placeholder="Religion">
               </div>
             </div>

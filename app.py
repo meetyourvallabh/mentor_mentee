@@ -260,6 +260,7 @@ def verify(code):
             session['fname'] = user['fname']
             session['lname'] = user['lname']
             session['mname'] = user['mname']
+            session['year'] = user['year']
             session['branch'] = user['branch']
             session['type'] = user['type']
             session['logged_in']=True
@@ -373,6 +374,13 @@ def add_mentee():
 
 
 
+@app.route('/delete_mentee/<email>')
+def delete_mentee(email):
+    users = mongo.db.users
+    users.delete_one({'email':email,'type':'mentee'})
+    flash('Mentee deleted successfully','success')
+    return redirect(url_for('dashboard'))
+
 
 @app.route('/profile',methods = ['POST','GET'])
 @is_logged_in
@@ -414,9 +422,10 @@ def profile():
                 #print(s['semester']+' '+s1)
                 found = users.find_one({'email':session['email'],'result.semester':int(s['semester']),'result.subject.subject_name':s1})
                 if found is not None:
-                    print('found')
+                    #print('found')
+                    pass
                 else:
-                    print('not found')
+                    #print('not found')
                 #users.update_one({'email':session['email'],'result.semester':int(s['semester'])},{'$pull':{'result.$.subject':{'subject_name':s1}}})
                     users.update_one({'email':session['email'],'result.semester':int(s['semester'])},{'$push':{'result.$.subject':{'subject_name':s1,'status':'null','attempts':1}}})
 
@@ -505,8 +514,12 @@ def updateprofile(step):
                             users.update_one({'email':session['email'],'result.semester':semester_no},{'$push':{'result.$.subject':{'subject_name':s1,'status':request.form[s1+'_status'],'attempts':int(request.form[s1+'_attempt'])}}})
                             if request.form[s1+'_status'] == 'fail':
                                 sem_status = 'ATKT'
-                                users.update_one({'email':session['email'],'result.semester':semester_no+1},{'$push':{'result.$.subject':{'subject_name':s1,'status':'null','attempts':int(request.form[s1+'_attempt'])+1}}})
+                                
+                                users.update_one({'email':session['email'],'result.semester':semester_no+1},{'$addToSet':{'result.$.subject':{'subject_name':s1,'status':'null','attempts':int(request.form[s1+'_attempt'])+1}}})
                                 print('updated in '+str(semester_no+1))
+                                
+                                
+                                
                             elif request.form[s1+'_status'] == 'pass':
                                 
                                 #users.update_one({'email':session['email'],'result.semester':semester_no-1},{'$push':{'result.$.subject':{'subject_name':s1,'status':'pass','attempts':int(request.form[s1+'_attempt'])}}})
