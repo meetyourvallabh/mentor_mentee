@@ -12,11 +12,11 @@ import itertools
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-#config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe")
+config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe")
 
 app = Flask(__name__)
 
-#app.config.from_envvar('APPLICATION_SETTING')
+app.config.from_envvar('APPLICATION_SETTING')
 
 
 ALLOWED_EXTENSIONS = set(['pdf', 'docx', 'doc'])
@@ -163,6 +163,7 @@ def login():
                         return redirect(url_for('index'))
                     else:
                         flash('Your Email is not verified yet, Please Do email verification by using link provided in mail','secondary')
+                        flash('Wait for the email if not recieved','warning')
                         return redirect(url_for('login'))
                 else:
                     session['fname'] = founduser['fname']
@@ -205,7 +206,7 @@ def changepasswordtoken(token):
     users = mongo.db.users
     if request.method == 'POST':
         hashpass = bcrypt.hashpw(request.form['password'].encode('utf-8'), bcrypt.gensalt())
-        done = users.update({'resetlink':token},{'$set':{'password':hashpass}})
+        done = users.update({'resetlink':token},{'$set':{'password':hashpass,'verification':'yes'}})
         if done:
             users.update({'resetlink':token},{'$set':{'resetlink':'inactive'}})
             flash('Password changed successfully','success')
@@ -240,7 +241,8 @@ def register():
             msg.body = msg_string
             msg.html = msg.body
             mail.send(msg)
-            flash('Mentee Added Successfully','success')
+            flash('Mentee account registered successfully.','success')
+            flash('Please complete email verification by clicking on a  verification link sent on your mail id.','secondary')
             return redirect(url_for('login'))
         else:
             flash('Email id already exists','danger')
@@ -633,8 +635,8 @@ def pdf_profile(email,option):
         rendered =  render_template("pdf_profile.html",user = user)
         #rendered =  render_template("example.html")
         css = [basedir+'/static/assets/css/view_profile.css',basedir+'/static/assets/bootstrap/css/bootstrap.min.css']
-        #pdf = pdfkit.from_string(rendered, False, css = css,configuration=config)
-        pdf = pdfkit.from_string(rendered, False, css = css)
+        pdf = pdfkit.from_string(rendered, False, css = css,configuration=config)
+        #pdf = pdfkit.from_string(rendered, False, css = css)
         response = make_response(pdf)
         response.headers['Content-Type'] = 'application/pdf'
         if option == 'view':

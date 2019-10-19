@@ -12,7 +12,10 @@
         <hr class="my-4">
         <p>It supports mentors and mentees to manage their profiles and meeting details.</p>
         <p class="lead">
+                {% if session.logged_in %}
+                {% else %}
           <a class="btn btn-primary btn-lg" href="{{url_for('login')}}" role="button">Login</a>
+          {% endif %}
         </p>
       </div>
 
