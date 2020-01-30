@@ -40,8 +40,9 @@ def for_whole_application():
     branches = mongo.db.branches
     all_branches = branches.find()
 
-
-    return dict(branches = all_branches)
+    user1 = mongo.db.users
+    reg_mentors = user1.find({"type":"mentor"})
+    return dict(branches = reg_mentors)
 
 # Check if user logged in
 def is_logged_in(f):
