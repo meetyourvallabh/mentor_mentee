@@ -912,6 +912,21 @@ def logout():
         flash('You are not Logged in','secondary')
         return redirect(url_for('login'))
 
+@app.route('/mentee_status/<email>', methods=['GET','POST'])
+def mentee_status(email):
+    users = mongo.db.users
+    if request.method == 'POST':
+        if request.form['status']:
+            print("email----{}".format(email))
+            print(len(request.form['status']))
+            users.update_one({"email":email},{"$set":{"status":request.form['status']}},upsert=True)    
+        return redirect(url_for('mentee_status',email=session['email']))
+    else:
+        all_mentee = users.find({"mentor_email":email})
+        return render_template("mentee_status.html",mentees=all_mentee)
+
+
+
 
 
 

@@ -1,0 +1,59 @@
+{% extends 'layout.html' %} {% block body %}
+
+<div style="margin-top:100px;">
+  <div class="container">
+    <table class="table table-hover table-dark">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Class</th>
+          <th scope="col">Status</th>
+          <th scope="col">Update Status</th>
+          <th scope="col">Option</th>
+          <th scope="col">Profile</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mentee in mentees %}
+        <tr>
+          <th scope="row">{{loop.index}}</th>
+          <td>{{mentee.fname}}. {{mentee.mname[0]}}. {{mentee.lname}}</td>
+          <td>{{mentee.year}}</td>
+          <td>{{mentee.status}}</td>
+          <td>
+            <form
+              action="{{url_for('mentee_status',email=mentee.email)}}"
+              method="POST"
+            >
+              <div class="form-group">
+                <input
+                  class="form-control"
+                  type="text"
+                  name="status"
+                  id="status"
+                  placeholder="New Status"
+                />
+              </div>
+            </td>
+            <td>
+              <button class="btn btn-primary"
+              >
+                Update
+              </button>
+            </form>
+            </td>
+            <td>
+              <a
+                class="btn btn-primary"
+                href="{{url_for('view_profile',email=mentee.email)}}"
+                >View profile</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
+</div>
+{% endblock %}

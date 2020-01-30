@@ -1,99 +1,140 @@
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Home - Brand</title>
-<link rel="stylesheet" href="{{url_for('static',filename='assets/bootstrap/css/bootstrap.min.css')}}">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+<link
+  rel="stylesheet"
+  href="{{url_for('static',filename='assets/bootstrap/css/bootstrap.min.css')}}"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Lato:300,400,700"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"
+/>
 
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css"
+/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/js/bootstrap.bundle.min.js"></script>
-<link rel="stylesheet" href="{{url_for('static',filename='assets/css/styles.min.css')}}">
-
+<link
+  rel="stylesheet"
+  href="{{url_for('static',filename='assets/css/styles.min.css')}}"
+/>
 
 <script src="{{url_for('static',filename='assets/js/script.min.js')}}"></script>
 
-<nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-white portfolio-navbar gradient">
-    <div class="container"><a class="navbar-brand logo" href="{{url_for('index')}}">M/M</a><button
-            class="navbar-toggler" data-toggle="collapse" data-target="#navbarNav"><span class="sr-only">Toggle
-                navigation</span><span class="navbar-toggler-icon"></span></button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="nav navbar-nav ml-auto">
-                {% if session.logged_in %}
-
-                {% if session.type in ['hod', 'admin'] %}
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" href="{{url_for('add_mentor')}}">Add Mentor</a>
-                </li>
-                {% endif %}
-
-                {% if session.type == 'admin' %}
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" href="{{url_for('add_hod')}}">Add HOD</a>
-                </li>
-                {% endif %}
-
-                {% if session.type in ['mentor'] %}
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" href="{{url_for('meetings')}}">Meetings</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" href="{{url_for('add_mentee')}}">Add Mentee</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" href="{{url_for('meeting_request')}}">Meeting Requests</a>
-                </li>
-                {% endif %}
-                {% if session.type in ['admin','hod','mentor'] %}
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" href="{{url_for('send_mail')}}">Send Mail</a>
-                </li>
-                {% endif %}
-                {% if session.type in ['mentee'] %}
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" href="{{url_for('documents')}}">Documents</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" href="{{url_for('achievements')}}">Achievements</a>
-                </li>
-                {% endif %}
-                {% if session.type in ['hod','admin','mentor'] %}
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" href="{{url_for('dashboard')}}">Dashboard</a>
-                </li>
-                {% endif %}
-
-
-                {% endif %}
-                {% if session.fname %}
-                <li class="dropdown">
-                    <a class="dropdown-toggle nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
-                        href="#">{{session.fname}} </a>
-                    <div class="dropdown-menu dropdown-menu-right" role="menu">
-                        {% if session.type == 'admin' %}
-                        <a class="dropdown-item" role="presentation" href="{{url_for('manage_subjects')}}">Manage
-                            Subjects</a>
-                        {% endif %}
-                        {% if session.type == 'mentee' %}
-                        <a class="dropdown-item" role="presentation" href="{{url_for('profile')}}">Profile</a>
-                        {% endif %}
-                        <a class="dropdown-item" role="presentation" href="{{url_for('logout')}}">Log Out</a>
-
-                    </div>
-                </li>
-                {% endif %}
-
-                {% if not session.logged_in %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('login')}}">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('register')}}">Register</a>
-                </li>
-                {% endif %}
-            </ul>
-        </div>
+<nav
+  class="navbar navbar-dark navbar-expand-lg fixed-top bg-white portfolio-navbar gradient"
+>
+  <div class="container">
+    <a class="navbar-brand logo" href="{{url_for('index')}}">M/M</a
+    ><button
+      class="navbar-toggler"
+      data-toggle="collapse"
+      data-target="#navbarNav"
+    >
+      <span class="sr-only">Toggle navigation</span
+      ><span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="nav navbar-nav ml-auto">
+        {% if session.logged_in %} {% if session.type in ['hod', 'admin'] %}
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" href="{{url_for('add_mentor')}}"
+            >Add Mentor</a
+          >
+        </li>
+        {% endif %} {% if session.type == 'admin' %}
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" href="{{url_for('add_hod')}}">Add HOD</a>
+        </li>
+        {% endif %} {% if session.type in ['mentor'] %}
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" href="{{url_for('meetings')}}">Meetings</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" href="{{url_for('add_mentee')}}"
+            >Add Mentee</a
+          >
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" href="{{url_for('meeting_request')}}"
+            >Meeting Requests</a
+          >
+        </li>
+        {% endif %} {% if session.type in ['admin','hod','mentor'] %}
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" href="{{url_for('send_mail')}}"
+            >Send Mail</a
+          >
+        </li>
+        {% endif %} {% if session.type in ['mentee'] %}
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" href="{{url_for('documents')}}"
+            >Documents</a
+          >
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" href="{{url_for('achievements')}}"
+            >Achievements</a
+          >
+        </li>
+        {% endif %} {% if session.type in ['hod','admin','mentor'] %}
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" href="{{url_for('dashboard')}}"
+            >Dashboard</a
+          >
+        </li>
+        {% endif %} {% endif %} {% if session.fname %}
+        <li class="dropdown">
+          <a
+            class="dropdown-toggle nav-link dropdown-toggle"
+            data-toggle="dropdown"
+            aria-expanded="false"
+            href="#"
+            >{{session.fname}}
+          </a>
+          <div class="dropdown-menu dropdown-menu-right" role="menu">
+            {% if session.type == 'admin' %}
+            <a
+              class="dropdown-item"
+              role="presentation"
+              href="{{url_for('manage_subjects')}}"
+              >Manage Subjects</a
+            >
+            {% endif %} {% if session.type == 'mentee' %}
+            <a
+              class="dropdown-item"
+              role="presentation"
+              href="{{url_for('profile')}}"
+              >Profile</a
+            >
+            {% endif %}
+            <a
+              class="dropdown-item"
+              role="presentation"
+              href="{{url_for('logout')}}"
+              >Log Out</a
+            >
+          </div>
+        </li>
+        {% endif %} {% if not session.logged_in %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('login')}}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('register')}}">Register</a>
+        </li>
+        {% endif %}
+      </ul>
     </div>
+  </div>
 </nav>
