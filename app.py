@@ -16,7 +16,7 @@ config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\\bin\wkh
 
 app = Flask(__name__)
 
-app.config.from_envvar('APPLICATION_SETTING')
+app.config.from_envvar('APPLICATION_SETTINGS')
 
 
 ALLOWED_EXTENSIONS = set(['pdf', 'docx', 'doc'])
@@ -42,7 +42,9 @@ def for_whole_application():
 
     user1 = mongo.db.users
     reg_mentors = user1.find({"type":"mentor"})
-    return dict(branches = reg_mentors)
+
+    result = [all_branches, reg_mentors]
+    return dict(branches = result)
 
 # Check if user logged in
 def is_logged_in(f):
@@ -157,6 +159,7 @@ def login():
                         session['email']=founduser['email']
                         session['year']=founduser['year']
                         session['branch']=founduser['branch']
+                        session['mentor']=founduser['mentor_email']
                         session['logged_in']=True
                         
                         session['branch'] = founduser['branch']
@@ -235,15 +238,21 @@ def register():
             passw = request.form['password']
             hashpass = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
             
+            #get mtor email of selected mtor
+            mentor_assign_name = request.form['mentor'].split()[0]
+            mentor_data = users.find_one({"fname":mentor_assign_name})
+            mentor_email = mentor_data['email']
+            
+            #create mtee user
             users.insert_one({'fname':request.form['fname'],'password':hashpass,'verification':verification_code,'approved':'no','mname':request.form['mname'],'lname':request.form['lname'],'type':'mentee' ,
-            'email':request.form['email'],'phone':request.form['phone'], 'branch':request.form['branch'],'year':request.form['year'],'division':request.form['division'],'batch':request.form['batch']})
+            'email':request.form['email'],'phone':request.form['phone'], 'branch':request.form['branch'],'year':request.form['year'],'division':request.form['division'],'batch':request.form['batch'],'mentor':request.form['mentor'],'mentor_email':mentor_email})
             msg = Message('MM: Mentee account registered successfully', sender='makeyourown48@gmail.com', recipients=[request.form['email']])
             msg_string = '<h1>Hello ' + request.form['fname']+ request.form['lname'] + '</h1><br> You are registered sucessfully !! <br><br> Click on below link to verify your account: <br> http://mm.mcoeit.com/verify/'+verification_code
             msg.body = msg_string
             msg.html = msg.body
             mail.send(msg)
             flash('Mentee account registered successfully.','success')
-            flash('Please complete email verification by clicking on a  verification link sent on your mail id.','secondary')
+            flash('Verification link sent. Check EMAIL!.','secondary')
             return redirect(url_for('login'))
         else:
             flash('Email id already exists','danger')
@@ -351,9 +360,9 @@ def add_mentee():
     users = mongo.db.users
     
     mentor = users.find_one({'email':session['email']})
-    mentees = users.find({'type':'mentee','year':{'$in':[mentor['batch'][0]['year']]},'branch': {'$in':[mentor['batch'][0]['branch']]},'batch': {'$in':[mentor['batch'][0]['batch_name']]}})
+    mentees = users.find({'type':'mentee','mentor_email':session['email']})
     
-
+    print(mentor['fname'])
 
     if request.method == 'POST':
         batchname = request.form['batch'].split(" ")
