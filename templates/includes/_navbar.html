@@ -58,12 +58,10 @@
         </li>
         {% endif %} {% if session.type in ['mentor'] %}
         <li class="nav-item" role="presentation">
-          <a class="nav-link active" href="{{url_for('meetings')}}">Meetings</a>
+          <a class="nav-link active" href="{{url_for('add_mentee')}}">Mentee</a>
         </li>
         <li class="nav-item" role="presentation">
-          <a class="nav-link active" href="{{url_for('add_mentee')}}"
-            >Add Mentee</a
-          >
+          <a class="nav-link active" href="{{url_for('meetings')}}">Meetings</a>
         </li>
         <li class="nav-item" role="presentation">
           <a class="nav-link active" href="{{url_for('meeting_request')}}"
