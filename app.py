@@ -370,7 +370,7 @@ def add_mentee():
         hashpass = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
         
         users.insert_one({'fname':request.form['fname'],'password':hashpass,'mname':request.form['mname'],'verification':'yes','approved':'yes','lname':request.form['lname'],'type':'mentee' ,
-        'email':request.form['email'],'phone':request.form['phone'], 'branch':batchname[1],'batch':batchname[4],'year':batchname[0],'division':batchname[2]})
+        'email':request.form['email'],'phone':request.form['phone'], 'mentor_email':session['email']})
         
         
         
@@ -390,8 +390,8 @@ def add_mentee():
 def delete_mentee(email):
     users = mongo.db.users
     users.delete_one({'email':email,'type':'mentee'})
-    flash('Mentee deleted successfully','success')
-    return redirect(url_for('dashboard'))
+    flash('Mentee deleted successfully','danger')
+    return redirect(url_for('add_mentee'))
 
 
 @app.route('/profile',methods = ['POST','GET'])

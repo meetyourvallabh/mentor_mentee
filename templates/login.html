@@ -78,34 +78,4 @@
   </div>
 </div>
 
-<script type="text/javascript">
-  const removeAlert = () => {
-    element = document.getElementsByClassName("alert");
-    for (let index = 0; index < element.length; index++) {
-      element[index].parentNode.removeChild(element[index]);
-    }
-  };
-
-  document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-      id = document.getElementsByClassName("alert");
-      console.log(id);
-
-      if (id.length == 1) {
-        id[0].innerHTML =
-          id[0].innerHTML +
-          '<i class="fa fa-times" aria-hidden="true" onclick="removeAlert()" style="float:right;"></i>';
-      } else if (id.length > 1) {
-        for (let index = 0; index < id.length; index++) {
-          id[index].innerHTML =
-            id[index].innerHTML +
-            '<i class="fa fa-times" aria-hidden="true" onclick="removeAlert()" style="float:right;"></i>';
-        }
-      }
-    },
-    false
-  );
-</script>
-
 {% endblock %}

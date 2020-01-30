@@ -1,27 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Mentor Mentee | MCOEIT</title>
     {% include 'includes/_navbar.html' %}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.css"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
-</head>
+  </head>
 
-<body>
-
-
-
+  <body>
     {%block body%} {%endblock%}
 
+    <script type="text/javascript">
+      const removeAlert = () => {
+        element = document.getElementsByClassName("alert");
+        for (let index = 0; index < element.length; index++) {
+          element[index].parentNode.removeChild(element[index]);
+        }
+      };
+
+      document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+          id = document.getElementsByClassName("alert");
+          console.log(id);
+
+          if (id.length == 1) {
+            id[0].innerHTML =
+              id[0].innerHTML +
+              '<i class="fa fa-times" aria-hidden="true" onclick="removeAlert()" style="float:right;"></i>';
+          } else if (id.length > 1) {
+            for (let index = 0; index < id.length; index++) {
+              id[index].innerHTML =
+                id[index].innerHTML +
+                '<i class="fa fa-times" aria-hidden="true" onclick="removeAlert()" style="float:right;"></i>';
+            }
+          }
+        },
+        false
+      );
+    </script>
 
     <script src="//cdn.ckeditor.com/4.11.1/standard/ckeditor.js"></script>
     <script type="text/javascript">
-        CKEDITOR.replace('editor')
-
+      CKEDITOR.replace("editor");
     </script>
 
     <!--<footer class="page-footer">
@@ -31,6 +58,5 @@
                 </div>
             </footer>
             -->
-</body>
-
+  </body>
 </html>
