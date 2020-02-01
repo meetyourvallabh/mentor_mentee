@@ -294,39 +294,44 @@ def add_mentor():
         mentors = users.find({'type':'mentor','branch':branch['branch']})
     else:
         mentors = users.find({'type':'mentor'})
+        mentors1 = users.find({'type':'mentor'})
     if request.method == 'POST':
         passw = request.form['fname']+'.'+str(randint(1111,9999))
         hashpass = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
         founduser = users.find_one({'email':request.form['email']})
-        existingbatch = users.find_one({'email':request.form['email'],'batch.batch_name':request.form['batch'],'batch.division':request.form['division'],'batch.branch':request.form['branch'],'batch.year':request.form['year']})
+        # existingbatch = users.find_one({'email':request.form['email'],'batch.batch_name':request.form['batch'],'batch.division':request.form['division'],'batch.branch':request.form['branch'],'batch.year':request.form['year']})
         if founduser is None:
             users.insert_one({'fname':request.form['fname'],'password':hashpass,'mname':request.form['mname'],'lname':request.form['lname'],'type':'mentor' , 
-            'email':request.form['email'],'phone':request.form['phone'], 'branch':user['branch'], 'batch':[{'batch_name':request.form['batch'], 'branch': request.form['branch'], 'division':request.form['division'],  'year':request.form['year']}]})
+            'email':request.form['email'],'phone':request.form['phone'],'branch': request.form['branch']})
             msg = Message('MM: Successfull Mentor account registration', sender='makeyourown48@gmail.com', recipients=[request.form['email']])
-            msg_string = '<h1>Respected Prof. ' + request.form['fname']+ request.form['lname'] + '</h1><br> You are registered sucessfully by Prof.'+ session['fname'] + session['lname'] +' as a Mentor of Batch '+ request.form['batch'] +' of class '+ request.form['year']+' ' +request.form['branch'] +' ' +request.form['division']+'!! <br><br> You can now login using following credentials<br> Email id : '+request.form['email']+'<br> Password : '+passw
+            # msg_string = '<h1>Respected Prof. ' + request.form['fname']+ request.form['lname'] + '</h1><br> You are registered sucessfully by Prof.'+ session['fname'] + session['lname'] +' as a Mentor of Batch '+ request.form['batch'] +' of class '+ request.form['year']+' ' +request.form['branch'] +' ' +request.form['division']+'!! <br><br> You can now login using following credentials<br> Email id : '+request.form['email']+'<br> Password : '+passw
+            msg_string = '<h1>Respected Prof. ' + request.form['fname']+ request.form['lname'] + '</h1><br> You are registered sucessfully by Prof.'+ session['fname'] + session['lname'] +' as a Mentor in Information Technology Department!! <br><br> You can now login using following credentials<br> Email id : '+request.form['email']+'<br> Password : '+passw
             msg.body = msg_string
             msg.html = msg.body
             mail.send(msg)
             flash('Mentor Added Successfully','success')
             return redirect(url_for('add_mentor'))
         
-        if existingbatch is None:
-            users.update({'email' : request.form['email']},{'$push':{'batch':{'batch_name':request.form['batch'], 'branch': request.form['branch'], 'division':request.form['division'],  'year':request.form['year']}}})                
-            msg = Message('MM: New Batch assigned !!', sender='makeyourown48@gmail.com', recipients=[request.form['email']])
-            msg_string = '<h1>Respected Prof. ' + request.form['fname']+ request.form['lname'] + '</h1><br> New batch is assigned by Prof.'+ session['fname'] + session['lname'] +' as a Mentor of Batch '+ request.form['batch'] +' of class '+ request.form['year']+' ' +request.form['branch'] +' ' +request.form['division']
-            msg.body = msg_string
-            msg.html = msg.body
-            mail.send(msg)
-            flash('Mentor account already exist','warning')
-            flash('Batch Assigned Successfully','success')
-            return redirect(url_for('add_mentor'))                
+        # if existingbatch is None:
+        #     users.update({'email' : request.form['email']},{'$push':{'batch':{'batch_name':request.form['batch'], 'branch': request.form['branch'], 'division':request.form['division'],  'year':request.form['year']}}})                
+        #     msg = Message('MM: New Batch assigned !!', sender='makeyourown48@gmail.com', recipients=[request.form['email']])
+        #     msg_string = '<h1>Respected Prof. ' + request.form['fname']+ request.form['lname'] + '</h1><br> New batch is assigned by Prof.'+ session['fname'] + session['lname'] +' as a Mentor of Batch '+ request.form['batch'] +' of class '+ request.form['year']+' ' +request.form['branch'] +' ' +request.form['division']
+        #     msg.body = msg_string
+        #     msg.html = msg.body
+        #     mail.send(msg)
+        #     flash('Mentor account already exist','warning')
+        #     flash('Batch Assigned Successfully','success')
+        #     return redirect(url_for('add_mentor'))                
         else:
+            flash('Mentor account already exist','warning')
             flash('Already assigned this batch','danger')
             return redirect(url_for('add_mentor'))
                                 
-        
-        
-    return render_template("add_mentor.html",mentors = mentors,branches = all_branches)
+    mentee_count = {}  
+    for men in mentors1:
+        _count = users.find({'type':"mentee",'mentor_email':men['email']}).count()
+        mentee_count.__setitem__(men['email'], _count) 
+    return render_template("add_mentor.html",mentors = mentors,branches = all_branches, mentee_count=mentee_count)
 
 @app.route('/add_hod',methods = ['POST','GET'])
 @is_logged_in
@@ -926,6 +931,13 @@ def mentee_status(email):
         return render_template("mentee_status.html",mentees=all_mentee)
 
 
+
+@app.route('/delete_mentor/<email>')
+def delete_mentor(email):
+    users = mongo.db.users
+    users.delete_one({'email':email,'type':'mentor'})
+    flash('Mentor deleted successfully','danger')
+    return redirect(url_for('add_mentor'))
 
 
 
