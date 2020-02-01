@@ -73,7 +73,8 @@
               <th scope="col">Name</th>
               <th scope="col">Branch</th>
               <th scope="col">Mentees</th>
-              <th scope="col">Option</th>
+              <th scope="col">Edit</th>
+              <th scope="col">Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -84,6 +85,13 @@
               <td>{{mentor.branch}}</td>
               <td>
                 {{mentee_count[mentor.email]}}
+              </td>
+              <td>
+                <a
+                  class="btn btn-sm btn-secondary"
+                  href="{{url_for('edit_mentor',email=mentor.email)}}"
+                  >Edit</a
+                >
               </td>
               <td>
                 <a

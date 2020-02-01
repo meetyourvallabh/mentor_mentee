@@ -246,7 +246,7 @@ def register():
             
             #create mtee user
             users.insert_one({'fname':request.form['fname'],'password':hashpass,'verification':verification_code,'approved':'no','mname':request.form['mname'],'lname':request.form['lname'],'type':'mentee' ,
-            'email':request.form['email'],'phone':request.form['phone'], 'branch':request.form['branch'],'year':request.form['year'],'division':request.form['division'],'batch':request.form['batch'],'mentor':request.form['mentor'],'mentor_email':mentor_email})
+            'email':request.form['email'],'phone':request.form['phone'], 'branch':request.form['branch'],'year':request.form['year'],'division':request.form['division'],'batch':request.form['batch'],'mentor':request.form['mentor'],'mentor_email':mentor_email, 'status':'Regular'})
             msg = Message('MM: Mentee account registered successfully', sender='makeyourown48@gmail.com', recipients=[request.form['email']])
             msg_string = '<h1>Hello ' + request.form['fname']+ request.form['lname'] + '</h1><br> You are registered sucessfully !! <br><br> Click on below link to verify your account: <br> http://mm.mcoeit.com/verify/'+verification_code
             msg.body = msg_string
@@ -725,20 +725,31 @@ def send_mail():
 @is_logged_in
 def dashboard():
     users = mongo.db.users
+    mentors1 = users.find({'type':'mentor'})
+    mentee_count = {}  
     if session['type'] == 'mentor':
+        for men in mentors1:
+            _count = users.count_documents({'type':"mentee",'mentor_email':men['email']})
+            mentee_count.__setitem__(men['email'], _count) 
         mentor = users.find_one({'email':session['email']})
         all_mentees = users.find({'type':'mentee','year':{'$in':[mentor['batch'][0]['year']]},'branch': {'$in':[mentor['batch'][0]['branch']]},'batch': {'$in':[mentor['batch'][0]['batch_name']]}})
-        return render_template("dashboard.html",all_mentees = all_mentees)
+        return render_template("dashboard.html",all_mentees = all_mentees, mentee_count=mentee_count)
     
-    elif session['type'] == 'hod':
+    elif session['type'] == 'hod':  
+        for men in mentors1:
+            _count = users.count_documents({'type':"mentee",'mentor_email':men['email']})
+            mentee_count.__setitem__(men['email'], _count) 
         all_mentors = users.find({'type':'mentor','branch':session['branch']})
         all_mentees = users.find({'type':'mentee','branch':session['branch']})
-        return render_template("dashboard.html",all_mentees = all_mentees,all_mentors = all_mentors)
+        return render_template("dashboard.html",all_mentees = all_mentees,all_mentors = all_mentors,mentee_count=mentee_count)
 
-    else:
+    elif session['type'] == 'admin':
+        for men in mentors1:
+            _count = users.count_documents({'type':"mentee",'mentor_email':men['email']})
+            mentee_count.__setitem__(men['email'], _count) 
         all_mentors = users.find({'type':'mentor'})
         all_mentees = users.find({'type':'mentee'})
-        return render_template("dashboard.html",all_mentees = all_mentees,all_mentors = all_mentors)
+        return render_template("dashboard.html",all_mentees = all_mentees,all_mentors = all_mentors,mentee_count=mentee_count)
 
 @app.route('/meeting_request',methods = ['POST','GET'])
 @is_logged_in
@@ -978,6 +989,23 @@ def edit_hod(email):
 
     return render_template('edit_hod.html', old_hod=old_hod)
     
+@app.route('/edit_mentor/<email>', methods=['GET','POST'])
+def edit_mentor(email):
+    users = mongo.db.users
+    branches = mongo.db.branches
+    all_branches = branches.find()
+    old_mentor = users.find_one({'email':email, 'type':'mentor'})
+    if request.method == 'POST':
+        find_mentor = users.find_one({'email':email, 'type':'mentor'})
+        if find_mentor is not None: 
+            users.update_one({'email':email},{'$set':{'fname':request.form['fname'], 'mname':request.form['mname'], 'lname':request.form['lname'], 'email':request.form['email'], 'phone':request.form['phone'], 'branch':request.form['branch']}})
+            flash('Mentor Updated successfully','success')
+            return redirect(url_for('add_mentor'))
+        else:
+            flash('Something Went wrong','danger')
+            return redirect(url_for('add_mentor'))
+
+    return render_template('edit_mentor.html', old_mentor=old_mentor, all_branches=all_branches)
 
 
 if __name__ == '__main__':
