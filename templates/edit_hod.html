@@ -1,0 +1,167 @@
+{% extends 'layout.html' %} {% block body %}
+<div style="margin-top:50px;">
+  <div class="contact-clean">
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-4">
+        <form action="#" method="get">
+          {% include 'includes/_messages.html' %}
+          <h2 class="text-center">Current HOD Details</h2>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="fname"
+              value="First Name: {{old_hod['fname']}}"
+              readonly
+              style="cursor: not-allowed;"
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="mname"
+              placeholder="Middle Name"
+              value="Middle Name: {{old_hod['mname']}}"
+              style="cursor: not-allowed;"
+              readonly
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="lname"
+              placeholder="Last Name"
+              value="Last Name: {{old_hod['lname']}}"
+              style="cursor: not-allowed;"
+              readonly
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="email"
+              name="email"
+              placeholder="Email"
+              value="Email: {{old_hod['email']}}"
+              style="cursor: not-allowed;"
+              readonly
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="phone"
+              placeholder="Phone number"
+              value="Phone: {{old_hod['phone']}}"
+              style="cursor: not-allowed;"
+              readonly
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="branch"
+              placeholder="Branch"
+              value="Branch: {{old_hod['branch']}}"
+              style="cursor: not-allowed;"
+              readonly
+            />
+          </div>
+
+          <!-- <div class="form-group">
+            <button class="btn btn-primary" type="submit">Add</button>
+          </div> -->
+        </form>
+      </div>
+
+      <div class="col-md-4">
+        <form
+          action="{{url_for('edit_hod',email=old_hod['email'])}}"
+          method="POST"
+        >
+          {% include 'includes/_messages.html' %}
+          <h2 class="text-center">New HOD Details</h2>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="fname"
+              placeholder="First Name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="mname"
+              placeholder="Middle Name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="lname"
+              placeholder="Last Name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="email"
+              name="email"
+              placeholder="Email"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="phone"
+              placeholder="Phone number"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="branch"
+              placeholder="Branch"
+              required
+            />
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <button class="btn btn-primary" type="submit">Edit</button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <a
+                  class="btn btn-danger"
+                  style="border: 1px solid transparent; background-color: #dc3545; margin-top: 15px;"
+                  href="{{url_for('add_hod')}}"
+                  >Cancle</a
+                >
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-2"></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -9,6 +9,7 @@ from functools import wraps
 from datetime import datetime
 import pdfkit
 import itertools
+from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -294,7 +295,8 @@ def add_mentor():
         mentors = users.find({'type':'mentor','branch':branch['branch']})
     else:
         mentors = users.find({'type':'mentor'})
-        mentors1 = users.find({'type':'mentor'})
+        mentors1 = mentors.clone()
+        # mentors1 = users.find({'type':'mentor'})
     if request.method == 'POST':
         passw = request.form['fname']+'.'+str(randint(1111,9999))
         hashpass = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
@@ -329,7 +331,7 @@ def add_mentor():
                                 
     mentee_count = {}  
     for men in mentors1:
-        _count = users.find({'type':"mentee",'mentor_email':men['email']}).count()
+        _count = users.count_documents({'type':"mentee",'mentor_email':men['email']})
         mentee_count.__setitem__(men['email'], _count) 
     return render_template("add_mentor.html",mentors = mentors,branches = all_branches, mentee_count=mentee_count)
 
@@ -341,20 +343,29 @@ def add_hod():
     branches = mongo.db.branches
     hods = users.find({'type':'hod'})
     if request.method == 'POST':
-        passw = request.form['fname']+'.'+str(randint(1111,9999))
-        hashpass = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
-        
-        users.insert_one({'fname':request.form['fname'],'password':hashpass,'mname':request.form['mname'],'lname':request.form['lname'],'type':'hod' ,
-        'email':request.form['email'],'phone':request.form['phone'], 'branch':request.form['branch']})
-        
-        branches.insert_one({'branch':request.form['branch'],'hod':request.form['fname']+' '+request.form['mname']+' '+request.form['lname'],'hod_email':request.form['email']})
-        
-        msg = Message('MM: Successfull HOD account registration', sender='makeyourown48@gmail.com', recipients=[request.form['email']])
-        msg_string = '<h1>Respected Prof. ' + request.form['fname']+ request.form['lname'] + '</h1><br> You are registered sucessfully !! <br><br> You can now login using following credentials<br> Email id : '+request.form['email']+'<br> Password : '+passw
-        msg.body = msg_string
-        msg.html = msg.body
-        mail.send(msg)
-        flash('HOD Added Successfully','success')
+        hod_found = users.find_one({'email':request.form['email'], 'type':'hod'})
+        if hod_found is None:    
+            branch_found = branches.find_one({'branch':request.form['branch']})
+            if branch_found is None:
+                passw = request.form['fname']+'.'+str(randint(1111,9999))
+                hashpass = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
+                
+                users.insert_one({'fname':request.form['fname'],'password':hashpass,'mname':request.form['mname'],'lname':request.form['lname'],'type':'hod' ,
+                'email':request.form['email'],'phone':request.form['phone'], 'branch':request.form['branch']})
+                
+                branches.insert_one({'branch':request.form['branch'],'hod':request.form['fname']+' '+request.form['mname']+' '+request.form['lname'],'hod_email':request.form['email']})
+                
+                msg = Message('MM: Successfull HOD account registration', sender='makeyourown48@gmail.com', recipients=[request.form['email']])
+                msg_string = '<h1>Respected Prof. ' + request.form['fname']+ request.form['lname'] + '</h1><br> You are registered sucessfully !! <br><br> You can now login using following credentials<br> Email id : '+request.form['email']+'<br> Password : '+passw
+                msg.body = msg_string
+                msg.html = msg.body
+                mail.send(msg)
+                flash('HOD Added Successfully','success')
+                flash('Branch '+request.form['branch']+' Added Successfully','success')
+            else:
+                flash('Branch already exists!','danger')
+        else:
+            flash('HOD already exists!','danger')
     return render_template("add_hod.html",hods = hods)
 
 
@@ -939,7 +950,34 @@ def delete_mentor(email):
     flash('Mentor deleted successfully','danger')
     return redirect(url_for('add_mentor'))
 
+@app.route('/delete_hod/<email>')
+def delete_hod(email):
+    users = mongo.db.users
+    branches = mongo.db.branches
+    branch = users.find_one({'email':email,'type':'hod'})
+    
+    users.delete_one({'email':email,'type':'hod'})
+    branches.delete_one({'hod_email':email})
 
+    flash('HOD deleted successfully','danger')
+    return redirect(url_for('add_hod'))
+
+
+@app.route('/edit_hod/<email>', methods=['GET','POST'])
+def edit_hod(email):
+    users = mongo.db.users
+    old_hod = users.find_one({'email':email, 'type':'hod'})
+    if request.method == 'POST':
+        find_hod = users.find_one({'email':email, 'type':'hod'})
+        if find_hod is not None: 
+            users.update_one({'email':email},{'$set':{'fname':request.form['fname'], 'mname':request.form['mname'], 'lname':request.form['lname'], 'email':request.form['email'], 'phone':request.form['phone'], 'branch':request.form['branch']}})
+            flash('HOD Updated successfully','success')
+            return redirect(url_for('add_hod',email=request.form['email']))
+        else:
+            flash('Something Went wrong','danger')
+
+    return render_template('edit_hod.html', old_hod=old_hod)
+    
 
 
 if __name__ == '__main__':
