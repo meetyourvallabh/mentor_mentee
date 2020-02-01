@@ -81,7 +81,11 @@
             {% for mentor in mentors %}
             <tr>
               <th scope="row">{{loop.index}}</th>
-              <td>{{mentor.fname}} {{mentor.mname}} {{mentor.lname}}</td>
+              <td>
+                <a href="{{url_for('show_mentees',email=mentor.email)}}">
+                  {{mentor.fname}} {{mentor.mname}} {{mentor.lname}}
+                </a>
+              </td>
               <td>{{mentor.branch}}</td>
               <td>
                 {{mentee_count[mentor.email]}}

@@ -1008,6 +1008,13 @@ def edit_mentor(email):
     return render_template('edit_mentor.html', old_mentor=old_mentor, all_branches=all_branches)
 
 
+@app.route('/show_mentees/<email>', methods=['GET','POST'])
+def show_mentees(email):
+    users = mongo.db.users
+    all_mentees = users.find({'mentor_email':email, 'type':'mentee'})
+    mentor = users.find_one({'email':email, 'type':'mentor'})
+    return render_template("show_mentees.html", all_mentees=all_mentees, mentor=mentor)
+
 if __name__ == '__main__':
     app.secret_key='secret123'
     app.run(host='0.0.0.0',debug='true',port='5000')

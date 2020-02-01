@@ -1,0 +1,47 @@
+{% extends 'layout.html' %} {% block body %}
+
+<div style="margin-top:100px;">
+  <div class="container">
+      
+    <H4>All Mentees Under {{mentor['fname']}} {{mentor['lname']}}</H4>
+    <table class="table table-hover table-dark">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Class</th>
+          <th scope="col">Status</th>
+          <th scope="col">Profile</th>
+          <th scope="col">Download</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mentee in all_mentees %}
+        <tr>
+          <th scope="row">{{loop.index}}</th>
+          <td>{{mentee.fname}}. {{mentee.mname[0]}}. {{mentee.lname}}</td>
+          <td>{{mentee.year}}</td>
+          <td>{{mentee.status}}</td>
+            </td>
+            <td>
+              <a
+                class="btn btn-primary"
+                href="{{url_for('view_profile',email=mentee.email)}}"
+                >View profile</a
+              >
+            </td>
+            <td>
+                <a
+                  class="btn btn-primary"
+                  href="{{url_for('view_profile',email=mentee.email,option='download')}}"
+                  >Download</a
+                >
+              </td>
+            
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
+</div>
+{% endblock %}
