@@ -406,7 +406,10 @@ def add_mentee():
 def delete_mentee(email):
     users = mongo.db.users
     users.delete_one({'email':email,'type':'mentee'})
+    
     flash('Mentee deleted successfully','danger')
+    if session['type'] == 'admin':
+        return redirect(url_for('dashboard'))
     return redirect(url_for('add_mentee'))
 
 

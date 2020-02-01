@@ -13,6 +13,7 @@
           <th scope="col">Status</th>
           <th scope="col">Profile</th>
           <th scope="col">Download</th>
+          <th scope="col">Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -25,19 +26,25 @@
             </td>
             <td>
               <a
-                class="btn btn-primary"
+                class="btn btn-sm btn-primary"
                 href="{{url_for('view_profile',email=mentee.email)}}"
                 >View profile</a
               >
             </td>
             <td>
                 <a
-                  class="btn btn-primary"
+                  class="btn btn-sm btn-primary"
                   href="{{url_for('view_profile',email=mentee.email,option='download')}}"
                   >Download</a
                 >
               </td>
-            
+            <td>
+              <a
+                  class="btn btn-sm btn-danger"
+                  href="{{url_for('delete_mentee',email=mentee.email)}}"
+                  >Delete</a
+                >
+            </td>
           </tr>
           {% endfor %}
         </tbody>

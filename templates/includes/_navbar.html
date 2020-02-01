@@ -48,13 +48,11 @@
       <ul class="nav navbar-nav ml-auto">
         {% if session.logged_in %} {% if session.type in ['hod', 'admin'] %}
         <li class="nav-item" role="presentation">
-          <a class="nav-link active" href="{{url_for('add_mentor')}}"
-            >Add Mentor</a
-          >
+          <a class="nav-link active" href="{{url_for('add_mentor')}}">Mentor</a>
         </li>
         {% endif %} {% if session.type == 'admin' %}
         <li class="nav-item" role="presentation">
-          <a class="nav-link active" href="{{url_for('add_hod')}}">Add HOD</a>
+          <a class="nav-link active" href="{{url_for('add_hod')}}">HOD</a>
         </li>
         {% endif %} {% if session.type in ['mentor'] %}
         <li class="nav-item" role="presentation">
