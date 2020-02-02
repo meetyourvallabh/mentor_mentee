@@ -240,13 +240,13 @@ def register():
             hashpass = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
             
             #get mtor email of selected mtor
-            mentor_assign_name = request.form['mentor'].split()[0]
-            mentor_data = users.find_one({"fname":mentor_assign_name})
-            mentor_email = mentor_data['email']
-            
+            mentor_email = request.form.get('mentor')
+            get_mentor_name = users.find_one({'email':mentor_email, 'type':'mentor'})
+            mentor_name = get_mentor_name['fname']+" "+get_mentor_name['lname']
+            print('email ----{}'.format(str(mentor_email)))
             #create mtee user
             users.insert_one({'fname':request.form['fname'],'password':hashpass,'verification':verification_code,'approved':'no','mname':request.form['mname'],'lname':request.form['lname'],'type':'mentee' ,
-            'email':request.form['email'],'phone':request.form['phone'], 'branch':request.form['branch'],'year':request.form['year'],'division':request.form['division'],'batch':request.form['batch'],'mentor':request.form['mentor'],'mentor_email':mentor_email, 'status':'Regular'})
+            'email':request.form['email'],'phone':request.form['phone'], 'branch':request.form['branch'],'year':request.form['year'],'division':request.form['division'],'batch':request.form['batch'],'mentor':mentor_name,'mentor_email':mentor_email, 'status':'Regular'})
             msg = Message('MM: Mentee account registered successfully', sender='makeyourown48@gmail.com', recipients=[request.form['email']])
             msg_string = '<h1>Hello ' + request.form['fname']+ request.form['lname'] + '</h1><br> You are registered sucessfully !! <br><br> Click on below link to verify your account: <br> http://mm.mcoeit.com/verify/'+verification_code
             msg.body = msg_string
@@ -765,15 +765,15 @@ def meeting_request():
     mentor = users.find_one({'email':session['email'],'type':'mentor'})
     if request.method == 'POST':
         users.update_one({'email':session['email']},{'$push':{'meeting_request':{'subject':request.form['subject'],
-        'time':request.form['time'],'venue':request.form['venue'],'date':request.form['date'],'batch':request.form['batch'],
-        'done':'no'}}})
+        'time':request.form['time'],'venue':request.form['venue'],'date':request.form['date'],
+        'done':'no'}}},upsert=True)
         meeting_id = request.form['subject']+str(randint(1111,9999))
-        meetings.insert_one({'mentor_email':session['email'],'meeting_id':meeting_id,'subject':request.form['subject'],'time':request.form['time'],'venue':request.form['venue'],'date':request.form['date'],'batch':request.form['batch'],'done':'no'})
+        meetings.insert_one({'mentor_email':session['email'],'meeting_id':meeting_id,'subject':request.form['subject'],'time':request.form['time'],'venue':request.form['venue'],'date':request.form['date'],'done':'no'})
 
         #mentor1 = users.find_one({'email':session['email'],'type':'mentor'})
         #for bat in mentor1['batch']:
         #    print(bat)
-        mentees = users.find({'branch':mentor['branch'],'year':mentor['batch'][0]['year'],'batch':mentor['batch'][0]['batch_name'],'division':mentor['batch'][0]['division']})
+        mentees = users.find({'mentor_email':session['email']})
         
         all_receipents = []
 
@@ -959,6 +959,14 @@ def mentee_status(email):
 @app.route('/delete_mentor/<email>')
 def delete_mentor(email):
     users = mongo.db.users
+    mentee_assigned = users.count_documents({'mentor_email':email})
+    if mentee_assigned > 0:
+        flash('Mentor has been assigned mentees','danger')
+        flash('Mentor cannot be deleted','danger')
+        flash('Edit the mentor info instead','danger')
+        
+        return redirect(url_for('add_mentor'))
+    
     users.delete_one({'email':email,'type':'mentor'})
     flash('Mentor deleted successfully','danger')
     return redirect(url_for('add_mentor'))
@@ -994,6 +1002,7 @@ def edit_hod(email):
 @app.route('/edit_mentor/<email>', methods=['GET','POST'])
 def edit_mentor(email):
     users = mongo.db.users
+    meetings = mongo.db.meetings
     branches = mongo.db.branches
     all_branches = branches.find()
     old_mentor = users.find_one({'email':email, 'type':'mentor'})
@@ -1001,6 +1010,9 @@ def edit_mentor(email):
         find_mentor = users.find_one({'email':email, 'type':'mentor'})
         if find_mentor is not None: 
             users.update_one({'email':email},{'$set':{'fname':request.form['fname'], 'mname':request.form['mname'], 'lname':request.form['lname'], 'email':request.form['email'], 'phone':request.form['phone'], 'branch':request.form['branch']}})
+            users.update({'mentor_email':email},{'$set':{'mentor_email':request.form['email']}})
+            meetings.update({'mentor_email':email},{'$set':{'mentor_email':request.form['email']}})
+
             flash('Mentor Updated successfully','success')
             return redirect(url_for('add_mentor'))
         else:

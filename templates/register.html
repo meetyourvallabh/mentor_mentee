@@ -130,7 +130,7 @@
         <select name="mentor" class="form-control" id="sel5">
           <option>select</option>
           {% for branch in branches[1] %}
-          <option data-name="{{branch.email}}"
+          <option value="{{branch.email}}"
             >{{branch.fname}} {{branch.lname}}</option
           >
           {% endfor %}
