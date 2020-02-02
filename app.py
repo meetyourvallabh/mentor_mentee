@@ -687,11 +687,12 @@ def send_mail():
         batch = []
         if session['type'] in ['mentor']:
             user = users.find_one({'email':session['email']})
-            for b in user['batch']:
-                batch.append(b)
-            bat = batch[0]
-            print(bat['batch_name'])
-            all_mentees = users.find({'type':'mentee','branch':user['branch'],'batch':bat['batch_name'],'division':bat['division'],'year':bat['year']})
+            # for b in user['batch']:
+            #     batch.append(b)
+            # bat = batch[0]
+            # print(bat['batch_name'])
+            # all_mentees = users.find({'type':'mentee','branch':user['branch'],'batch':bat['batch_name'],'division':bat['division'],'year':bat['year']})
+            all_mentees = users.find({'type':'mentee','mentor_email':session['email']})
         if session['type'] in ['hod']:
             user = users.find_one({'email':session['email']})
             all_mentors = users.find({'type':'mentor','branch':user['branch']})
@@ -853,6 +854,8 @@ def meeting(id):
 def manage_subjects():
     subjects = mongo.db.subjects
     all_subjects = subjects.find()
+    branch = mongo.db.branches
+    branches = branch.find()
     if request.method == 'POST':
         branch_found = subjects.find_one({'branch':request.form['branch'],'subjects.semester':request.form['semester']},{'subjects':1})
         if branch_found is not None:
@@ -866,12 +869,8 @@ def manage_subjects():
         else:
             subjects.update_one({'branch':request.form['branch']},{'$push':{'subjects':{'semester':request.form['semester'],'subject':[request.form['subject_name']]}}})
         
-        
-
-
-        
             
-    return render_template("manage_subjects.html",all_subjects = all_subjects)
+    return render_template("manage_subjects.html",all_subjects = all_subjects, branches=branches)
 
 
 
