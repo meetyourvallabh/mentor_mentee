@@ -362,19 +362,19 @@
                   <th scope="row">10th</th>
                   <td>
 
-                    <input type="text" name="board10" class="form-control"
+                    <input type="text" name="board10" class="form-control" placeholder="SSC / etc.."
                       value="{% if user.academic is defined %}{{user.academic.result.class_10.board}}{% endif %}">
 
                   </td>
                   <td>
-                    <input type="text" name="year10" class="form-control"
+                    <input type="text" name="year10" class="form-control" placeholder="YYYY"
                       value="{% if user.academic is defined %}{{user.academic.result.class_10.year}}{% endif %}">
                   </td>
                   <td>
-                    <input type="text" name="marks10" class="form-control"
+                    <input type="text" name="marks10" class="form-control" placeholder="Marks obtained/Total marks e.g. 500/800"
                       value="{% if user.academic is defined %}{{user.academic.result.class_10.marks}}{% endif %}">
                   </td>
-                  <td> <input type="text" name="percentage10" class="form-control"
+                  <td> <input type="text" name="percentage10" class="form-control" placeholder="100%"
                       value="{% if user.academic is defined %}{{user.academic.result.class_10.percentage}}{% endif %}">
                   </td>
                 </tr>
@@ -383,19 +383,19 @@
                   <th scope="row" rowspan="1">12th</th>
                   <td rowspan="1">
 
-                    <input type="text" name="board12" class="form-control"
+                    <input type="text" name="board12" class="form-control" placeholder="HSC / etc.."
                       value="{% if user.academic is defined %}{{user.academic.result.class_12.board}}{% endif %}">
 
                   </td>
                   <td rowspan="1">
-                    <input type="text" name="year12" class="form-control"
+                    <input type="text" name="year12" class="form-control" placeholder="YYYY"
                       value="{% if user.academic is defined %}{{user.academic.result.class_12.year}}{% endif %}">
                   </td>
                   <td>
                     <table>
                       <tr>
 
-                        <td>12th<input type="text" name="marks12" id="marks12" class="form-control"
+                        <td>12th<input type="text" name="marks12" id="marks12" class="form-control" 
                             value="{% if user.academic is defined %}{{user.academic.result.class_12.marks}}{% endif %}">
                         </td>
                         <td>Entrance<input type="text" name="entrance12" class="form-control"
@@ -405,7 +405,7 @@
                     </table>
 
                   </td>
-                  <td rowspan="1"> <input type="text" name="percentage12" class="form-control"
+                  <td rowspan="1"> <input type="text" name="percentage12" class="form-control" placeholder="100%"
                       value="{% if user.academic is defined %}{{user.academic.result.class_12.percentage}}{% endif %}">
                   </td>
                 </tr>
@@ -414,19 +414,19 @@
                   <th scope="row">Diploma</th>
                   <td>
 
-                    <input type="text" name="board_diploma" class="form-control"
+                    <input type="text" name="board_diploma" class="form-control" placeholder="MSBTE / N.A. / etc.."
                       value="{% if user.academic is defined %}{{user.academic.result.diploma.board}}{% endif %}">
 
                   </td>
                   <td>
-                    <input type="text" name="year_diploma" class="form-control"
+                    <input type="text" name="year_diploma" class="form-control" placeholder="YYYY"
                       value="{% if user.academic is defined %}{{user.academic.result.diploma.year}}{% endif %}">
                   </td>
                   <td>
                     <input type="text" name="marks_diploma" class="form-control"
                       value="{% if user.academic is defined %}{{user.academic.result.diploma.marks}}{% endif %}">
                   </td>
-                  <td> <input type="text" name="percentage_diploma" class="form-control"
+                  <td> <input type="text" name="percentage_diploma" class="form-control" placeholder="100%"
                       value="{% if user.academic is defined %}{{user.academic.result.diploma.percentage}}{% endif %}">
                   </td>
                 </tr>
@@ -437,7 +437,7 @@
               <label for="extra_curicular">Extra Curicular Activites</label>
               <input type="text" class="form-control"
                 value="{% if user.academic is defined %}{{user.academic.extra_curicular}}{% endif %}"
-                name="extra_curicular" id="extra_curicular" placeholder="Won 1st prize at ..">
+                name="extra_curicular" id="extra_curicular" placeholder="Won 1st prize, Programming course, etc ..">
             </div>
 
             <input class="btn btn-primary" type="submit" value="update">
@@ -449,7 +449,9 @@
         <div class="tab-pane {% if session.step == 'results'%}active{% endif %} role="tabpanel" id="tab-4">
           <br>
           <h3>Results</h3>
+          <p>Result section will be added soon.</p>
           <div class="col-md-8">
+            {% if 0 %}
             {% for sem in user.result %}
             {% if sem.subject != [] %}
             <h3>Semester {{sem.semester}}</h3>
@@ -548,7 +550,8 @@
           </div>
           <hr>
           <br>
-
+        {% endif %} 
+        <!-- block result tab -->
         </div>
       </div>
     </div>

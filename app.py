@@ -9,7 +9,7 @@ from functools import wraps
 from datetime import datetime
 import pdfkit
 import itertools
-
+import socket
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe")
@@ -64,7 +64,7 @@ def is_admin(f):
         if session['type'] == 'admin':
             return f(*args, **kwargs)
         else:
-            flash('Unauthorized access, You r not allowed here', 'danger')
+            flash('Unauthorized access, You\'re not allowed here', 'danger')
             return redirect(url_for('index'))
     return wrap
 
@@ -75,7 +75,7 @@ def is_hod(f):
         if session['type'] == 'admin' or session['type'] == 'hod':
             return f(*args, **kwargs)
         else:
-            flash('Unauthorized access, You r not allowed here', 'danger')
+            flash('Unauthorized access, You\'re not allowed here', 'danger')
             return redirect(url_for('index'))
     return wrap
 
@@ -86,7 +86,7 @@ def is_mentor(f):
         if session['type'] == 'admin' or session['type'] == 'mentor' or session['type'] == 'hod':
             return f(*args, **kwargs)
         else:
-            flash('Unauthorized access, You r not allowed here', 'danger')
+            flash('Unauthorized access, You\'re not allowed here', 'danger')
             return redirect(url_for('index'))
     return wrap
 # Check if user is hod
@@ -96,7 +96,7 @@ def is_only_mentee(f):
         if session['type'] == 'mentee':
             return f(*args, **kwargs)
         else:
-            flash('Unauthorized access, You r not allowed here', 'danger')
+            flash('Unauthorized access, You\'re not allowed here', 'danger')
             return redirect(url_for('index'))
     return wrap
 
@@ -189,12 +189,13 @@ def login():
 @app.route('/changepassword',methods = ['POST','GET'])
 def changepassword():
     users = mongo.db.users
+    ip = socket.gethostbyname(socket.gethostname())
     if request.method == 'POST':
         founduser = users.find_one({'email':request.form['email']})
         if founduser:
             token=str(randint(11111,99999))
             msg = Message('MM: Password reset link', sender='makeyourown48@gmail.com', recipients=[request.form['email']])
-            msg_string = '<h1>Hello, ' + founduser['fname'] + '</h1><br><br> Click on below button to change your account password: <br> http://mm.mcoeit.com/changepasswordtoken/'+token
+            msg_string = '<h1>Hello, ' + founduser['fname'] + '</h1><br><br> Click on below button to change your account password: <br>'+str(ip)+'/changepasswordtoken/'+token
             msg.body = msg_string
             msg.html = msg.body
             mail.send(msg)
@@ -230,7 +231,8 @@ def changepasswordtoken(token):
 @app.route('/register',methods = ['POST','GET'])
 def register():
     users = mongo.db.users
-
+    ip = socket.gethostbyname(socket.gethostname())
+    
     if request.method == 'POST':
         founduser = users.find_one({'email':request.form['email']})
         verification_code = str(randint(1111,9999))
@@ -247,7 +249,7 @@ def register():
             users.insert_one({'fname':request.form['fname'],'password':hashpass,'verification':verification_code,'approved':'no','mname':request.form['mname'],'lname':request.form['lname'],'type':'mentee' ,
             'email':request.form['email'],'phone':request.form['phone'], 'branch':request.form['branch'],'year':request.form['year'],'division':request.form['division'],'batch':request.form['batch'],'mentor':mentor_name,'mentor_email':mentor_email, 'status':'Regular'})
             msg = Message('MM: Mentee account registered successfully', sender='makeyourown48@gmail.com', recipients=[request.form['email']])
-            msg_string = '<h1>Hello ' + request.form['fname']+ request.form['lname'] + '</h1><br> You are registered sucessfully !! <br><br> Click on below link to verify your account: <br> http://mm.mcoeit.com/verify/'+verification_code
+            msg_string = '<h1>Hello ' + request.form['fname']+ request.form['lname'] + '</h1><br> Account registered sucessfully !! <br><br> Click on below link to verify your account: <br> http://mm.mcoeit.com/verify/'+verification_code+'<br><p style="color:red;">IMP!! If link not working!<br>Verify through college network</p><br>'+str(ip)+'/verify/'+verification_code+'<br>THANK YOU.'
             msg.body = msg_string
             msg.html = msg.body
             mail.send(msg)
@@ -284,6 +286,7 @@ def verify(code):
 
 @app.route('/add_mentor',methods = ['POST','GET'])
 @is_logged_in
+@is_mentor
 def add_mentor():
     users = mongo.db.users
     branches = mongo.db.branches
@@ -402,6 +405,8 @@ def add_mentee():
 
 
 @app.route('/delete_mentee/<email>')
+@is_logged_in
+@is_mentor
 def delete_mentee(email):
     users = mongo.db.users
     users.delete_one({'email':email,'type':'mentee'})
@@ -636,6 +641,7 @@ def delete_document(id):
 
 
 @app.route('/view_documents/<email>')
+@is_logged_in
 @is_mentor
 def view_documents(email):
     users = mongo.db.users
@@ -656,6 +662,7 @@ def view_profile(email):
 
 
 @app.route('/pdf_profile/<email>/<option>',methods = ['POST','GET'])
+@is_logged_in
 def pdf_profile(email,option):
     if session['type'] in ['hod','admin','mentor']:
         users = mongo.db.users
@@ -792,6 +799,8 @@ def meeting_request():
 
 
 @app.route('/delete_meeting/<id>', methods=['GET', 'POST'])
+@is_logged_in
+@is_mentor
 def delete_meeting(id):
     meetings = mongo.db.meetings
     users = mongo.db.users
@@ -817,6 +826,7 @@ def meetings():
 
 @app.route('/meeting/<id>',methods = ['GET','POST'])
 @is_logged_in
+@is_mentor
 def meeting(id):
     users = mongo.db.users
     meetings = mongo.db.meetings
@@ -854,6 +864,8 @@ def meeting(id):
 
 
 @app.route('/manage_subjects',methods=['POST','GET'])
+@is_logged_in
+@is_mentor
 def manage_subjects():
     subjects = mongo.db.subjects
     all_subjects = subjects.find()
@@ -879,6 +891,7 @@ def manage_subjects():
 
 
 @app.route('/achievements', methods=['GET', 'POST'])
+@is_logged_in
 def achievements():
     users = mongo.db.users
     user = users.find_one({'email':session['email']})
@@ -894,6 +907,7 @@ def achievements():
     
 
 @app.route('/view_chart/<email>', methods=['GET', 'POST'])
+@is_logged_in
 def view_chart(email):
     users = mongo.db.users
     user = users.find_one({'email':email})
@@ -945,6 +959,8 @@ def logout():
         return redirect(url_for('login'))
 
 @app.route('/mentee_status/<email>', methods=['GET','POST'])
+@is_logged_in
+@is_mentor
 def mentee_status(email):
     users = mongo.db.users
     if request.method == 'POST':
@@ -960,6 +976,8 @@ def mentee_status(email):
 
 
 @app.route('/delete_mentor/<email>')
+@is_logged_in
+@is_admin
 def delete_mentor(email):
     users = mongo.db.users
     mentee_assigned = users.count_documents({'mentor_email':email})
@@ -975,6 +993,8 @@ def delete_mentor(email):
     return redirect(url_for('add_mentor'))
 
 @app.route('/delete_hod/<email>')
+@is_logged_in
+@is_admin
 def delete_hod(email):
     users = mongo.db.users
     branches = mongo.db.branches
@@ -988,6 +1008,8 @@ def delete_hod(email):
 
 
 @app.route('/edit_hod/<email>', methods=['GET','POST'])
+@is_logged_in
+@is_admin
 def edit_hod(email):
     users = mongo.db.users
     old_hod = users.find_one({'email':email, 'type':'hod'})
@@ -1003,6 +1025,8 @@ def edit_hod(email):
     return render_template('edit_hod.html', old_hod=old_hod)
     
 @app.route('/edit_mentor/<email>', methods=['GET','POST'])
+@is_logged_in
+@is_admin
 def edit_mentor(email):
     users = mongo.db.users
     meetings = mongo.db.meetings
@@ -1026,6 +1050,8 @@ def edit_mentor(email):
 
 
 @app.route('/show_mentees/<email>', methods=['GET','POST'])
+@is_logged_in
+@is_mentor
 def show_mentees(email):
     users = mongo.db.users
     all_mentees = users.find({'mentor_email':email, 'type':'mentee'})
@@ -1033,6 +1059,8 @@ def show_mentees(email):
     return render_template("show_mentees.html", all_mentees=all_mentees, mentor=mentor)
 
 @app.route('/edit_meeting/<id>', methods=['GET','POST'])
+@is_logged_in
+@is_mentor
 def edit_meeting(id):
     meetings = mongo.db.meetings
     users = mongo.db.users
