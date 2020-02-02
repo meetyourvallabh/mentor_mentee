@@ -9,7 +9,6 @@ from functools import wraps
 from datetime import datetime
 import pdfkit
 import itertools
-from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -111,7 +110,7 @@ def index():
     if 'logged_in' in session:
         if session['type'] == 'mentee':
             mentee = users.find_one({'email':session['email']})
-            mentor = users.find_one({'meeting_request.batch':mentee['year']+' '+mentee['branch']+' '+mentee['division']+' batch '+mentee['batch']})
+            mentor = users.find_one({'email':mentee['mentor_email']})
             if mentor is not None:
                 all_meetings = meetings.find({'mentor_email':mentor['email']})
                 
@@ -120,8 +119,7 @@ def index():
                         meetdate = datetime.strptime(r['date'], '%Y-%m-%d')
                         print(meetdate)
                         if meetdate >= date:
-                            meeting_requests.append({'venue':r['venue'],'batch':r['batch'],'time':r['time'],'date':r['date'],'subject':r['subject']})
-
+                            meeting_requests.append({'venue':r['venue'],'time':r['time'],'date':r['date'],'subject':r['subject']})
             return render_template("index.html",meeting_requests =meeting_requests)
 
         if session['type'] == 'mentor':
@@ -132,7 +130,8 @@ def index():
                 meetdate = datetime.strptime(r['date'], '%Y-%m-%d')
                 print(meetdate)
                 if meetdate >= date:
-                    meeting_requests1.append({'venue':r['venue'],'batch':r['batch'],'time':r['time'],'date':r['date'],'subject':r['subject']})
+                    meeting_requests1.append({'venue':r['venue'],'time':r['time'],'date':r['date'],'subject':r['subject']})
+            print(meeting_requests1)
             return render_template("index.html",meeting_requests1 = meeting_requests1,mentor1=mentor1)
     
 
@@ -736,7 +735,7 @@ def dashboard():
             _count = users.count_documents({'type':"mentee",'mentor_email':men['email']})
             mentee_count.__setitem__(men['email'], _count) 
         mentor = users.find_one({'email':session['email']})
-        all_mentees = users.find({'type':'mentee','year':{'$in':[mentor['batch'][0]['year']]},'branch': {'$in':[mentor['batch'][0]['branch']]},'batch': {'$in':[mentor['batch'][0]['batch_name']]}})
+        all_mentees = users.find({'type':'mentee','mentor_email':session['email']})
         return render_template("dashboard.html",all_mentees = all_mentees, mentee_count=mentee_count)
     
     elif session['type'] == 'hod':  
@@ -795,6 +794,9 @@ def meeting_request():
 @app.route('/delete_meeting/<id>', methods=['GET', 'POST'])
 def delete_meeting(id):
     meetings = mongo.db.meetings
+    users = mongo.db.users
+    #update({'type':'mentee','mentor_email':'@.com'},{"$pull":{"meetings":{"meeting_id":"779120"}}},{multi:true})
+    users.update({'type':'mentee','mentor_email':session['email']},{'$pull':{"meetings":{'meeting_id':id}}},multi=True)
     meetings.delete_one({'meeting_id':id})
     flash('Meeting request deleted successfully','success')
     return redirect(url_for('meeting_request'))
@@ -810,20 +812,21 @@ def delete(mentee):
 @is_logged_in
 def meetings():
     meetings = mongo.db.meetings
-    all_meetings = meetings.find({'mentor_email':session['email']})
+    all_meetings = meetings.find({'mentor_email':session['email']}).sort('date',-1)
     return render_template("meetings.html",meetings = all_meetings)
 
 @app.route('/meeting/<id>',methods = ['GET','POST'])
 @is_logged_in
 def meeting(id):
     users = mongo.db.users
-    mentor = users.find_one({'email':session['email']})
-    mentees = users.find({'type':'mentee','year':{'$in':[mentor['batch'][0]['year']]},'branch': {'$in':[mentor['batch'][0]['branch']]},'batch': {'$in':[mentor['batch'][0]['batch_name']]}})
     meetings = mongo.db.meetings
+    mentor = users.find_one({'email':session['email']})
+    mentees = users.find({'type':'mentee','mentor_email':session['email']})
     meeting = meetings.find_one({'meeting_id':id})
     current_mentee = users.find_one({'email':request.args.get('email')})
     remark1 = []
     x = datetime.now()
+    # x=datetime.datetime(2009, 10, 5, 18, 00)
     if current_mentee is not None:
         if 'meetings' in current_mentee:
             remark = users.find_one({'email':request.args.get('email'),'meetings.meeting_id':id},{ 'meetings': { '$elemMatch': {'meeting_id': id } } })
@@ -834,11 +837,11 @@ def meeting(id):
     if meeting['mentor_email'] == session['email']:
         if request.method == 'POST':
             meet = users.find_one({'email':request.args.get('email'),'meetings.meeting_id':id})
+            #meeting entry for first time
             if meet is None:
-
-                users.update_one({'email':request.args.get('email')},{'$push':{'meetings':{'mentor_email':session['email'],'meeting_id':meeting["meeting_id"],'subject':meeting['subject'],'time':meeting['time'],'venue':meeting['venue'],'date':meeting['date'],'batch':meeting['batch'],'done':'yes','remark':request.form['remark'],'last_updated_on':x}}})
+                users.update_one({'email':request.args.get('email')},{'$push':{'meetings':{'mentor_email':session['email'],'meeting_id':meeting["meeting_id"],'subject':meeting['subject'],'time':meeting['time'],'venue':meeting['venue'],'date':meeting['date'],'done':'yes','remark':request.form['remark'],'last_updated_on':x}}})
                 print('done')
-            else:
+            else: #mentee alreay appeared for meeting
                 
                 users.update_one({'email':request.args.get('email'),'meetings.meeting_id':id},{'$set':{'meetings.$.remark':request.form['remark']}})
                 users.update_one({'email':request.args.get('email'),'meetings.meeting_id':id},{'$set':{'meetings.$.last_updated_on':x}})
@@ -1028,6 +1031,23 @@ def show_mentees(email):
     all_mentees = users.find({'mentor_email':email, 'type':'mentee'})
     mentor = users.find_one({'email':email, 'type':'mentor'})
     return render_template("show_mentees.html", all_mentees=all_mentees, mentor=mentor)
+
+@app.route('/edit_meeting/<id>', methods=['GET','POST'])
+def edit_meeting(id):
+    meetings = mongo.db.meetings
+    users = mongo.db.users
+    old_meeting = meetings.find_one({'mentor_email':session['email'], 'meeting_id':id})
+    if request.method == "POST":
+        meetings.update({'mentor_email':session['email'],'meeting_id':id},{'mentor_email':session['email'],'meeting_id':id ,'subject':request.form['subject'], 'time':request.form['time'], 'date':request.form['date'], 'venue':request.form['venue']})
+        #update({'type':'mentee','mentor_email':'cristianor383@gmail.com','meetings.meeting_id':"kkk2148"},{"$set":{"meetings.$.time":"6900"}})
+        if old_meeting['done'] == 'yes':
+            users.update({'type':'mentee','mentor_email':session['email'],'meetings.meeting_id':id},{"$set":{"meetings.$.subject":request.form['subject'],"meetings.$.time":request.form['time'],"meetings.$.date":request.form['date'], "meetings.$.venue":request.form['venue']}}, multi=True)
+        else:
+            users.update({'type':'mentee','mentor_email':session['email'],'meetings.meeting_id':id},{"$set":{"meetings.$.subject":request.form['subject'],"meetings.$.time":request.form['time'],"meetings.$.date":request.form['date'], "meetings.$.venue":request.form['venue']}}, multi=True)
+        return redirect(url_for("meeting_request"))
+        
+    return render_template("edit_meetings.html",old_meeting=old_meeting)
+
 
 if __name__ == '__main__':
     app.secret_key='secret123'

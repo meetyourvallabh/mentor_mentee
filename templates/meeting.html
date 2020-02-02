@@ -5,30 +5,35 @@
       <h3>{{ meeting.subject }}</h3>
       <p style="color:gray;">on {{ meeting.date }} at {{ meeting.venue }}</p>
       <hr />
-      <b>Name :</b> {{ current_mentee.fname }} {{ current_mentee.mname }}
-      {{ current_mentee.lname }}
+      <b>Name :</b> {{ current_mentee.fname }} {{ current_mentee.mname }} {{
+      current_mentee.lname }}
       <br />
-      <b>Class :</b> {{ current_mentee.year }} {{ current_mentee.branch }}
-      {{ current_mentee.division }}
+      <b>Class :</b> {{ current_mentee.year }} {{ current_mentee.branch }} {{
+      current_mentee.division }}
       <br />
       <b>Batch :</b> {{ current_mentee.batch }}
       <br />
       <br />
-      <br>
+      <br />
       <h5>
-        <b>Meeting remarks :</b></h5>
-        <p style="color:gray;">Last Updated : {{remark1.last_updated_on}}</p>
-        
-        <form action="{{url_for('meeting',id=meeting.meeting_id,email=current_mentee.email)}}" method="POST">
-          <div class="form-group">
-            <textarea id="editor" class="form-control" name="remark" id="content">{{ remark1.remark | safe }}</textarea>
-          </div>
+        <b>Meeting remarks :</b>
+      </h5>
+      <p style="color:gray;">Last Updated : {{remark1.last_updated_on}}</p>
 
-          <div class="form-group">
-            <input class="btn btn-primary" type="submit" value="Submit" />
-          </div>
-        </form>
-      
+      <form
+        action="{{url_for('meeting',id=meeting.meeting_id,email=current_mentee.email)}}"
+        method="POST"
+      >
+        <div class="form-group">
+          <textarea id="editor" class="form-control" name="remark" id="content">
+{{ remark1.remark | safe }}</textarea
+          >
+        </div>
+
+        <div class="form-group">
+          <input class="btn btn-primary" type="submit" value="Submit" />
+        </div>
+      </form>
     </div>
     <div class="col-md-5">
       <table class="table table-hover table-dark">
@@ -37,7 +42,7 @@
             <th scope="col">#</th>
             <th scope="col">Name</th>
 
-            <th scope="col">Batch</th>
+            <th scope="col">Year</th>
           </tr>
         </thead>
         <tbody>
@@ -46,12 +51,13 @@
           <tr>
             <th scope="row">{{ loop.index }}</th>
             <td>
-              <a href="{{url_for('meeting',id=id,email=mentee.email)}}">{{ mentee.fname }} {{ mentee.mname }}
-                {{ mentee.lname }}</a>
+              <a href="{{url_for('meeting',id=id,email=mentee.email)}}"
+                >{{ mentee.fname }} {{ mentee.mname }} {{ mentee.lname }}</a
+              >
             </td>
 
             <td>
-              {{ mentee.batch }}
+              {{ mentee.year }}
             </td>
           </tr>
 

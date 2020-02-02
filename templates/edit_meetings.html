@@ -1,0 +1,122 @@
+{% extends 'layout.html' %} {% block body %}
+<div style="margin-top:50px;">
+  <div class="contact-clean">
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-4">
+        <form action="#" method="get">
+          {% include 'includes/_messages.html' %}
+          <h2 class="text-center">Current Meeting Details</h2>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="subject"
+              value="Subject: {{old_meeting['subject']}}"
+              readonly
+              style="cursor: not-allowed;"
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="time"
+              placeholder=""
+              value="Time: {{old_meeting['time']}}"
+              style="cursor: not-allowed;"
+              readonly
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="date"
+              name="date"
+              value="{{old_meeting['date']}}"
+              style="cursor: not-allowed;"
+              readonly
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="venue"
+              placeholder=""
+              value="Venue: {{old_meeting['venue']}}"
+              style="cursor: not-allowed;"
+              readonly
+            />
+          </div>
+        </form>
+      </div>
+
+      <div class="col-md-4">
+        <form
+          action="{{url_for('edit_meeting',id=old_meeting['meeting_id'])}}"
+          method="POST"
+        >
+          {% include 'includes/_messages.html' %}
+          <h2 class="text-center">New Meeting Details</h2>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="subject"
+              placeholder="Subject"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="time"
+              name="time"
+              placeholder="Time"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="date"
+              name="date"
+              placeholder="yyyy-mm-dd"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              class="form-control"
+              type="text"
+              name="venue"
+              placeholder="venue"
+              required
+            />
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <button class="btn btn-primary" type="submit">Edit</button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <a
+                  class="btn btn-danger"
+                  style="border: 1px solid transparent; background-color: #dc3545; margin-top: 15px;"
+                  href="{{url_for('meeting_request')}}"
+                  >Cancel</a
+                >
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-2"></div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
