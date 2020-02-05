@@ -10,6 +10,8 @@ from datetime import datetime
 import pdfkit
 import itertools
 import socket
+from openpyxl import Workbook
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe")
@@ -549,9 +551,12 @@ def updateprofile(step):
                             users.update_one({'email':session['email'],'result.semester':semester_no},{'$push':{'result.$.subject':{'subject_name':s1,'status':request.form[s1+'_status'],'attempts':int(request.form[s1+'_attempt'])}}})
                             if request.form[s1+'_status'] == 'fail':
                                 sem_status = 'ATKT'
-                                
-                                users.update_one({'email':session['email'],'result.semester':semester_no+1},{'$addToSet':{'result.$.subject':{'subject_name':s1,'status':'null','attempts':int(request.form[s1+'_attempt'])+1}}})
-                                print('updated in '+str(semester_no+1))
+                                subject_failed = users.count_documents({"email":session['email'], "result.subject.subject_name":s1})
+                                if subject_failed:
+                                    users.update_one({'email':session['email'],'result.semester':semester_no+1},{'$addToSet':{'result.$.subject':{'subject_name':s1,'status':'null','attempts':int(request.form[s1+'_attempt'])+1}}})
+                                else:
+                                    users.update_one({'email':session['email'],'result.semester':semester_no+1},{'$addToSet':{'result.$.subject':{'subject_name':s1,'status':'null','attempts':int(request.form[s1+'_attempt'])+1}}})
+                                    print('updated in '+str(semester_no+1))
                                 
                                 
                                 
@@ -1076,6 +1081,39 @@ def edit_meeting(id):
         
     return render_template("edit_meetings.html",old_meeting=old_meeting)
 
+
+@app.route('/download_status/<email>', methods=['GET','POST'])
+@is_logged_in
+@is_admin
+def download_status(email):
+    workbook = Workbook()
+    sheet = workbook.active
+    print(email)
+    users = mongo.db.users
+    length = users.count_documents({'mentor_email':email, 'type':'mentee'})
+    all_mentee = users.find({'mentor_email':email, 'type':'mentee'})
+    mentor_name = users.find_one({'email':email, 'type':'mentor'})
+    print(dict(mentor_name))
+    sheet.merge_cells('A1:E1') 
+    sheet.cell(row = 1, column = 1).value = "Mentee Status under guidence of "+mentor_name['fname']+" "+mentor_name['lname']
+    
+    sheet["A2"] = "Sr.NO."
+    sheet["B2"] = "Name"
+    sheet["C2"] = "Status"
+    i=3
+    for mentee in all_mentee:
+        sheet["B"+str(i)] = mentee['fname']+" "+mentee["lname"]
+        sheet["C"+str(i)] = mentee['status']
+        i+=1
+    sheet["D2"] ="dd2"
+    sheet["E2"] ="gfdasd"
+    
+    file_name = "hello_world"+str(randint(111,9999))+".xlsx"
+    workbook.save(filename=file_name)
+    print(file_name)
+    return send_from_directory(filename=file_name, as_attachment=True,directory="")
+    # return redirect("show_mentees.html" email=session['email'])
+    
 
 if __name__ == '__main__':
     app.secret_key='secret123'

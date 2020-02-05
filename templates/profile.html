@@ -2,6 +2,26 @@
 
 {% block body %}
 
+<style>
+
+  label > button.styleradio {
+    background-color: white !important;
+    color: black;
+  }
+
+  label > button.styleradio :hover {
+    background-color: green !important;
+    color: black;
+  }
+
+  .styleradio:after {
+    width: 100px;
+    height: 200px;
+  }
+
+
+</style>
+
 <div class="container-fluid" style="margin-top:100px;">
   <div class="row">
     <div class="col-sm-3 text-center">
@@ -449,9 +469,14 @@
         <div class="tab-pane {% if session.step == 'results'%}active{% endif %} role="tabpanel" id="tab-4">
           <br>
           <h3>Results</h3>
-          <p>Result section will be added soon.</p>
+          <!-- <p>Result section will be added soon.</p> -->
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Alert!</strong> Click on Pass or Fail. Result will be updated after clicking on Update of each semester.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
           <div class="col-md-8">
-            {% if 0 %}
             {% for sem in user.result %}
             {% if sem.subject != [] %}
             <h3>Semester {{sem.semester}}</h3>
@@ -480,11 +505,11 @@
                       {% if sub.status=='pass' %}
                       <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-success active">
-                          <input type="radio" name="{{sub.subject_name}}_status" id="option1" autocomplete="off"
+                          <input class="" type="radio" name="{{sub.subject_name}}_status" id="option1" autocomplete="off"
                             value="pass" checked> Passed
                         </label>
                         <label class="btn btn-danger">
-                          <input type="radio" name="{{sub.subject_name}}_status" id="option2" autocomplete="off"
+                          <input class="" type="radio" name="{{sub.subject_name}}_status" id="option2" autocomplete="off"
                             value="fail">
                           Fail
                         </label>
@@ -506,14 +531,14 @@
                       </div>
                       {% else %}
                       <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="btn btn-success">
-                          <input type="radio" name="{{sub.subject_name}}_status" id="option1" autocomplete="off"
-                            value="pass">
+                        <label class="btn btn-success labelpass" id="labelpass">
+                          <input class="styleradio1" style="background-color: white !important; color: black !important;" type="radio" name="{{sub.subject_name}}_status" id="pass1" autocomplete="off"
+                            value="pass" onchange="passfunc()">
                           Pass
                         </label>
-                        <label class="btn btn-danger">
-                          <input type="radio" name="{{sub.subject_name}}_status" id="option2" autocomplete="off"
-                            value="fail" checked>
+                        <label class="btn btn-danger labelfail" id="labelfail">
+                          <input type="radio" class="styleradio2" name="{{sub.subject_name}}_status" id="option2" autocomplete="off"
+                            value="fail" id="option2" onchange="passfunc()">
                           Fail
                         </label>
 
@@ -550,11 +575,58 @@
           </div>
           <hr>
           <br>
-        {% endif %} 
         <!-- block result tab -->
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  
+  const passfunc = () =>{
+    passid = document.getElementsByClassName("labelpass");
+    passid2 = document.getElementsByClassName("labelfail");
+    
+    for (let index = 0; index < passid.length; index++) {
+      // passed radio
+      if(passid[index].firstElementChild.checked) {
+          if((passid[index].innerHTML).includes("Passed")){
+
+          }else {
+            console.log("here2")
+           passid[index].innerHTML = passid[index].innerHTML.replace("Pass","Passed")
+           passid[index].firstElementChild.checked = true
+           passid2[index].firstElementChild.checked = false
+           
+          }
+          if((passid2[index].innerHTML).includes("Failed")){
+          passid2[index].innerHTML = passid2[index].innerHTML.replace("Failed","Fail")
+          }
+        }
+      //failed radio
+      if(passid2[index].firstElementChild.checked) {
+          if((passid2[index].innerHTML).includes("Failed")){
+
+          }else {
+           passid2[index].innerHTML = passid2[index].innerHTML.replace("Fail","Failed")
+           passid2[index].firstElementChild.checked = true
+           passid[index].firstElementChild.checked = false
+          }
+          if((passid[index].innerHTML).includes("Passed")){
+          passid[index].innerHTML = passid[index].innerHTML.replace("Passed","Pass")
+          }
+      }
+    }
+  }
+
+  
+
+
+
+
+
+
+</script>
+
 {% endblock %}
