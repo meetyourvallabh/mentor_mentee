@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, session, json, jsonify, make_response, send_from_directory
+from flask import Flask, render_template, request, flash, redirect, url_for, session, json, jsonify, make_response, send_from_directory, send_file
 import os
 import requests
 from flask_pymongo import PyMongo
@@ -10,7 +10,7 @@ from datetime import datetime
 import pdfkit
 import itertools
 import socket
-from openpyxl import load_workbook
+from openpyxl import Workbook
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe")
@@ -1106,7 +1106,7 @@ def edit_meeting(id):
 @is_admin
 def download_status(email):
     file_name = "menteeStatus.xlsx"
-    workbook = load_Workbook(filename="menteeStatus.xlxs")
+    workbook = Workbook()
     sheet = workbook.active
     users = mongo.db.users
     
@@ -1126,17 +1126,10 @@ def download_status(email):
         sheet["B"+str(i)] = mentee['fname']+" "+ mentee['mname'][0]+" " +mentee["lname"]
         sheet["C"+str(i)] = mentee['status']
         i+=1
-    sheet["D2"] ="zzz"
-    sheet["E2"] ="xxx"
     
-    prin("asdsadsadasd")
-    if(workbook.save(filename=file_name)):
-        print(file_name)
-        return send_file(filename=file_name,directory="",cache_timeout=0)
-    else:
-        flask("Something went wrong","danger")
-        return redirect(url_for("show_mentees",email=session['email']))
-    # return redirect("show_mentees.html" email=session['email'])
+    
+    print(str(workbook.save(filename="menteeStatus.xlsx")))
+    return send_file("menteeStatus.xlsx", as_attachment=True ,cache_timeout=0)
     
 
 if __name__ == '__main__':

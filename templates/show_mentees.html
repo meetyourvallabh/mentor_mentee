@@ -5,7 +5,7 @@
       
     <H4>All Mentees Under {{mentor['fname']}} {{mentor['lname']}} - <a
       class="btn btn-sm btn-primary float-right"
-      href="{{url_for('download_status', email=all_mentees[0].mentor_email)}}"
+      href="{{url_for('download_status', email=mentor['email'])}}"
       >Download All Mentee Status</a
     ></H4>
     <table class="table table-hover table-dark">
@@ -24,7 +24,7 @@
         {% for mentee in all_mentees %}
         <tr>
           <th scope="row">{{loop.index}}</th>
-          <td>{{mentee.fname}}. {{mentee.mname[0]}}. {{mentee.lname}}</td>
+          <td>{{mentee.fname}}. {{mentee.mname}}. {{mentee.lname}}</td>
           <td>{{mentee.year}}</td>
           <td>{{mentee.status}}</td>
             </td>
