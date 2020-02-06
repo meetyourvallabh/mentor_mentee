@@ -32,7 +32,7 @@
           if (id.length == 1) {
             id[0].innerHTML =
               id[0].innerHTML +
-              '<i class="fa fa-times" aria-hidden="true" onclick="removeAlert()" style="float:right;"></i>';
+              '<i class="fa fa-times" aria-hidden="true" onclick="removeAlert()" style="display:flex; float:inherit;"></i>';
           } else if (id.length > 1) {
             for (let index = 0; index < id.length; index++) {
               id[index].innerHTML =

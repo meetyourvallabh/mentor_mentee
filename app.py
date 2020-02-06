@@ -10,8 +10,7 @@ from datetime import datetime
 import pdfkit
 import itertools
 import socket
-from openpyxl import Workbook
-
+from openpyxl import load_workbook
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\\bin\wkhtmltopdf.exe")
@@ -551,13 +550,17 @@ def updateprofile(step):
                             users.update_one({'email':session['email'],'result.semester':semester_no},{'$push':{'result.$.subject':{'subject_name':s1,'status':request.form[s1+'_status'],'attempts':int(request.form[s1+'_attempt'])}}})
                             if request.form[s1+'_status'] == 'fail':
                                 sem_status = 'ATKT'
-                                subject_failed = users.count_documents({"email":session['email'], "result.subject.subject_name":s1})
+                                # subject_failed = users.count_documents({"email":session['email'], "result.subject.subject_name":s1, 'result.semester':semester_no+1})
+                                subject_failed =  users.count_documents({"result":{"$elemMatch":{"subject.subject_name":s1, "semester":semester_no+1}}})
+                                print("s1 ",str(s1))
+                                print("semester ",str(semester_no))
+                                print("subject_failed === ",str(subject_failed))
                                 if subject_failed:
-                                    users.update_one({'email':session['email'],'result.semester':semester_no+1},{'$addToSet':{'result.$.subject':{'subject_name':s1,'status':'null','attempts':int(request.form[s1+'_attempt'])+1}}})
+                                    print("subject alrady failed")
+                                    # users.update_one({'email':session['email'],'result.semester':semester_no+1},{'$addToSet':{'result.$.subject':{'subject_name':s1,'status':'null','attempts':int(request.form[s1+'_attempt'])+1}}})
                                 else:
                                     users.update_one({'email':session['email'],'result.semester':semester_no+1},{'$addToSet':{'result.$.subject':{'subject_name':s1,'status':'null','attempts':int(request.form[s1+'_attempt'])+1}}})
                                     print('updated in '+str(semester_no+1))
-                                
                                 
                                 
                             elif request.form[s1+'_status'] == 'pass':
@@ -892,8 +895,24 @@ def manage_subjects():
             
     return render_template("manage_subjects.html",all_subjects = all_subjects, branches=branches)
 
-
-
+@app.route('/edit_subject',methods=['POST','GET'])
+@is_logged_in
+@is_mentor
+def edit_subject():
+    users = mongo.db.users
+    subjects = mongo.db.subjects
+    if request.method == "POST":
+        option = request.form['subjectoption']
+        if option == "Edit":
+            subjects.update({"subjects.semester":request.form['semester'],"subjects.subject":request.form['old_subject']},{"$pull":{"subjects.$.subject":request.form['old_subject']}})
+            subjects.update({"subjects.semester":request.form['semester']},{"$push":{"subjects.$.subject":request.form['new_subject']}})
+            return redirect(url_for("manage_subjects"))
+        if option == "Delete":
+            subjects.update({"subjects.subject":request.form['old_subject']},{"$pull":{"subjects.$.subject":request.form["old_subject"]}})
+            return redirect(url_for("manage_subjects"))
+    
+    return redirect(url_for("manage_subjects"))
+    
 
 @app.route('/achievements', methods=['GET', 'POST'])
 @is_logged_in
@@ -1086,14 +1105,16 @@ def edit_meeting(id):
 @is_logged_in
 @is_admin
 def download_status(email):
-    workbook = Workbook()
+    file_name = "menteeStatus.xlsx"
+    workbook = load_Workbook(filename="menteeStatus.xlxs")
     sheet = workbook.active
-    print(email)
     users = mongo.db.users
+    
     length = users.count_documents({'mentor_email':email, 'type':'mentee'})
     all_mentee = users.find({'mentor_email':email, 'type':'mentee'})
     mentor_name = users.find_one({'email':email, 'type':'mentor'})
-    print(dict(mentor_name))
+    
+    
     sheet.merge_cells('A1:E1') 
     sheet.cell(row = 1, column = 1).value = "Mentee Status under guidence of "+mentor_name['fname']+" "+mentor_name['lname']
     
@@ -1102,16 +1123,19 @@ def download_status(email):
     sheet["C2"] = "Status"
     i=3
     for mentee in all_mentee:
-        sheet["B"+str(i)] = mentee['fname']+" "+mentee["lname"]
+        sheet["B"+str(i)] = mentee['fname']+" "+ mentee['mname'][0]+" " +mentee["lname"]
         sheet["C"+str(i)] = mentee['status']
         i+=1
-    sheet["D2"] ="dd2"
-    sheet["E2"] ="gfdasd"
+    sheet["D2"] ="zzz"
+    sheet["E2"] ="xxx"
     
-    file_name = "hello_world"+str(randint(111,9999))+".xlsx"
-    workbook.save(filename=file_name)
-    print(file_name)
-    return send_from_directory(filename=file_name, as_attachment=True,directory="")
+    prin("asdsadsadasd")
+    if(workbook.save(filename=file_name)):
+        print(file_name)
+        return send_file(filename=file_name,directory="",cache_timeout=0)
+    else:
+        flask("Something went wrong","danger")
+        return redirect(url_for("show_mentees",email=session['email']))
     # return redirect("show_mentees.html" email=session['email'])
     
 
