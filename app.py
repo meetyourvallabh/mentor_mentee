@@ -35,6 +35,8 @@ app.config['MAIL_PASSWORD'] = 'myocoo@123'
 mongo = PyMongo(app)
 mail = Mail(app)
 
+ip = socket.gethostbyname(socket.gethostname())
+
 
 @app.context_processor
 def for_whole_application():
@@ -190,7 +192,6 @@ def login():
 @app.route('/changepassword',methods = ['POST','GET'])
 def changepassword():
     users = mongo.db.users
-    ip = socket.gethostbyname(socket.gethostname())
     if request.method == 'POST':
         founduser = users.find_one({'email':request.form['email']})
         if founduser:
@@ -232,7 +233,7 @@ def changepasswordtoken(token):
 @app.route('/register',methods = ['POST','GET'])
 def register():
     users = mongo.db.users
-    ip = socket.gethostbyname(socket.gethostname())
+    
     
     if request.method == 'POST':
         founduser = users.find_one({'email':request.form['email']})
