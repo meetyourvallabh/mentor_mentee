@@ -1004,6 +1004,7 @@ def mentee_status(email):
 @is_admin
 def delete_mentor(email):
     users = mongo.db.users
+    meetings = mongo.db.meetings
     mentee_assigned = users.count_documents({'mentor_email':email})
     if mentee_assigned > 0:
         flash('Mentor has been assigned mentees','danger')
@@ -1013,6 +1014,7 @@ def delete_mentor(email):
         return redirect(url_for('add_mentor'))
     
     users.delete_one({'email':email,'type':'mentor'})
+    meetings.delete({'mentor_email':email})
     flash('Mentor deleted successfully','danger')
     return redirect(url_for('add_mentor'))
 
