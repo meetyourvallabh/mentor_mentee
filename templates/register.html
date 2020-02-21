@@ -18,6 +18,7 @@
       class="image-1"
     />
     <form method="POST" action="{{url_for('register')}}">
+      <div id="msg_display"></div>
       <h3>New Mentee?</h3>
       <div class="form-holder">
         <span class="lnr lnr-user"></span>
@@ -67,6 +68,7 @@
           required
           name="email"
           placeholder="Mail"
+          id="email"
         />
       </div>
       <div class="form-holder">

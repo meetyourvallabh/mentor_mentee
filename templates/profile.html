@@ -37,7 +37,7 @@
       <div class="text-center">
         <img src="{{url_for('static',filename=user.propic)}}" height="250" width="250" id="profilepic"
           class="avatar img-circle" alt="avatar">
-        <h6>Upload a different photo...</h6>
+        <h6>Photo</h6>
         <form class="form" action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
           <div class="form-group">
             <input type="file" name="propic" id="profilepicinput" class="text-center center-block file-upload">
@@ -47,6 +47,23 @@
           </div>
         </form>
       </div>
+      <form method="POST" action="{{url_for('change_mentor',email=session['email'])}}">
+        <div class="form-gropu">
+          <label>Current Mentor: {{session['mentor_name']}}</label>
+        </div>
+        <div class="form-group">
+          <label for="change_mentor">Change Mentor</label>
+          <select name="change_mentor" class="form-control" id="change_mentor">
+            <option>select</option>
+            {% for branch in branches[1] %}
+            <option value="{{branch.email}}"
+              >{{branch.fname}} {{branch.lname}}</option
+            >
+            {% endfor %}
+          </select>
+        </div>
+    <button type="submit" class="btn btn-primary">Change Mentor</button>
+      </form>
       </hr><br>
 
 

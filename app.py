@@ -161,6 +161,7 @@ def login():
                         session['year']=founduser['year']
                         session['branch']=founduser['branch']
                         session['mentor']=founduser['mentor_email']
+                        session['mentor_name']=founduser['mentor']
                         session['logged_in']=True
                         
                         session['branch'] = founduser['branch']
@@ -943,8 +944,6 @@ def view_chart(email):
         'cultural':0,
         'papers_published':0,
         'other':0
-
-
     }
 
 
@@ -1131,6 +1130,37 @@ def download_status(email):
     print(str(workbook.save(filename="menteeStatus.xlsx")))
     return send_file("menteeStatus.xlsx", as_attachment=True ,cache_timeout=0)
     
+
+@app.route("/change_mentor/<email>",methods=['POST'])
+@is_logged_in
+@is_only_mentee
+def change_mentor(email):
+    users = mongo.db.users
+    get_mentor_name = users.find_one({'email':request.form['change_mentor'], 'type':'mentor'})
+    mentor_name = get_mentor_name['fname']+" "+get_mentor_name['lname']
+           
+    if request.method == 'POST':
+        users.update_one({'email':email,'type':"mentee"},{"$set": {'mentor_email':request.form['change_mentor'],'mentor':mentor_name}})
+        
+        session['mentor']=get_mentor_name['email']
+        session['mentor_name']= mentor_name
+        flash("Mentor Change Successfull!","success")
+        return redirect(url_for('profile'))
+    flash("Mentor didn't Change!","danger")
+    return redirect(url_for('profile'))
+
+
+# @app.route("/backupdatabase")
+# def backupdatabase():
+#     year = datetime.datetime.now().year
+#     print("year ",year)
+#     month = datetime.datetime.now().month
+#     print("month ",month)
+#     day = datetime.datetime.now().day
+#     print("day ",day)
+#     path = os.path.abspath(basedir+'/backup/'+year+"/"+month+"/"+day
+
+
 
 if __name__ == '__main__':
     app.secret_key='secret123'
