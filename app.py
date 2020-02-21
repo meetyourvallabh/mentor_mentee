@@ -1158,8 +1158,12 @@ def backupdatabase():
     month = str(datetime.now().month)
     day = str(datetime.now().day)
     
-    os.system("mongodump -h 127.0.0.1:27017 -d mm -o "+basedir+"/Backup/"+year+"/"+month+"/"+day)
-    flash("Database Backup Successfull!","success")
+    stored = os.system("mongodump -h 127.0.0.1:27017 -d mm -o "+basedir+"/Backup/"+year+"/"+month+"/"+day)
+    if stored == 0:
+        flash("Database Backup Successfull!","success")
+    else:
+        flash("Database Backup Fail!","danger")
+
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
