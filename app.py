@@ -1150,18 +1150,17 @@ def change_mentor(email):
     flash("Mentor didn't Change!","danger")
     return redirect(url_for('profile'))
 
-
-# @app.route("/backupdatabase")
-# def backupdatabase():
-#     year = datetime.datetime.now().year
-#     print("year ",year)
-#     month = datetime.datetime.now().month
-#     print("month ",month)
-#     day = datetime.datetime.now().day
-#     print("day ",day)
-#     path = os.path.abspath(basedir+'/backup/'+year+"/"+month+"/"+day
-
-
+@app.route("/backupdatabase")
+@is_logged_in
+@is_admin
+def backupdatabase():
+    year = str(datetime.now().year)
+    month = str(datetime.now().month)
+    day = str(datetime.now().day)
+    
+    os.system("mongodump -h 127.0.0.1:27017 -d mm -o "+basedir+"/Backup/"+year+"/"+month+"/"+day)
+    flash("Database Backup Successfull!","success")
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.secret_key='secret123'

@@ -106,6 +106,12 @@
               href="{{url_for('manage_subjects')}}"
               >Manage Subjects</a
             >
+            <a
+              class="dropdown-item"
+              role="presentation"
+              href="{{url_for('backupdatabase')}}"
+              >Backup Database</a
+            >
             {% endif %} {% if session.type == 'mentee' %}
             <a
               class="dropdown-item"
